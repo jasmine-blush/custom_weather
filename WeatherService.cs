@@ -8,35 +8,35 @@ namespace custom_weather
 {
     internal class WeatherService
     {
-        private static readonly Dictionary<int, string> _wmoCodes = new Dictionary<int, string>{
-            { 0, "Clear sky" },
-            { 1, "Mainly clear" },
-            { 2, "Partly cloudy" },
-            { 3, "Overcast" },
-            { 45, "Fog" },
-            { 48, "Depositing Rime Fog" },
-            { 51, "Light drizzle" },
-            { 53, "Moderate drizzle" },
-            { 55, "Dense drizzle" },
-            { 56, "Light freezing drizzle" },
-            { 57, "Dense freezing drizzle" },
-            { 61, "Slight rain" },
-            { 63, "Moderate rain" },
-            { 65, "Heavy rain" },
-            { 66, "Light freezing rain" },
-            { 67, "Heavy freezing rain" },
-            { 71, "Slight snow fall" },
-            { 73, "Moderate snow fall" },
-            { 75, "Heavy snow fall" },
-            { 77, "Snow grains" },
-            { 80, "Slight rain showers" },
-            { 81, "Moderate rain showers" },
-            { 82, "Violent rain showers" },
-            { 85, "Slight snow showers" },
-            { 86, "Heavy snow showers" },
-            { 95, "Thunderstorm" }, //Slight or moderate
-            { 96, "Thunderstorm and slight hail" },
-            { 99, "Thunderstorm and heavy hail" },
+        private static readonly Dictionary<int, string[]> _wmoCodes = new Dictionary<int, string[]>{
+            { 0, new string[] { "Clear sky", "Images\\clear" } },
+            { 1, new string[] { "Mainly clear", "Images\\clouds" } },
+            { 2, new string[] { "Partly cloudy", "Images\\clouds" } },
+            { 3, new string[] { "Overcast", "Images\\overcast" } },
+            { 45, new string[] { "Fog", "Images\\overcast" } },
+            { 48, new string[] { "Depositing Rime Fog", "Images\\overcast" } },
+            { 51, new string[] { "Light drizzle", "Images\\drizzle" } },
+            { 53, new string[] { "Moderate drizzle", "Images\\drizzle" } },
+            { 55, new string[] { "Dense drizzle", "Images\\drizzle" } },
+            { 56, new string[] { "Light freezing drizzle", "Images\\drizzle" } },
+            { 57, new string[] { "Dense freezing drizzle", "Images\\drizzle" } },
+            { 61, new string[] { "Slight rain", "Images\\rain" } },
+            { 63, new string[] { "Moderate rain", "Images\\rain" } },
+            { 65, new string[] { "Heavy rain", "Images\\rain" } },
+            { 66, new string[] { "Light freezing rain", "Images\\rain" } },
+            { 67, new string[] { "Heavy freezing rain", "Images\\rain" } },
+            { 71, new string[] { "Slight snow fall", "Images\\snow" } },
+            { 73, new string[] { "Moderate snow fall", "Images\\snow" } },
+            { 75, new string[] { "Heavy snow fall", "Images\\snow" } },
+            { 77, new string[] { "Snow grains", "Images\\snow" } },
+            { 80, new string[] { "Slight rain showers", "Images\\shower" } },
+            { 81, new string[] { "Moderate rain showers", "Images\\shower" } },
+            { 82, new string[] { "Violent rain showers", "Images\\shower" } },
+            { 85, new string[] { "Slight snow showers", "Images\\snow" } },
+            { 86, new string[] { "Heavy snow showers", "Images\\snow" } },
+            { 95, new string[] { "Thunderstorm", "Images\\thunderstorm" } }, //Slight or moderate
+            { 96, new string[] { "Thunderstorm and slight hail", "Images\\hail" } },
+            { 99, new string[] { "Thunderstorm and heavy hail", "Images\\hail" } },
         };
 
         private static readonly HttpClient _client = new HttpClient();
@@ -46,7 +46,7 @@ namespace custom_weather
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
                 { "longitude", coords.Longitude },
-                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,relative_humidity_2m" }
+                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,relative_humidity_2m,is_day" }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
             var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
@@ -58,9 +58,15 @@ namespace custom_weather
 
                 WeatherResult result = new WeatherResult();
                 result.Title = location + " - ";
-                if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string weatherString))
+                if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
                 {
-                    result.Title += weatherString;
+                    result.Title += weatherType[0];
+                    result.IcoPath = weatherType[1];
+                    if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
+                    {
+                        result.IcoPath += "_night";
+                    }
+                    result.IcoPath += ".png";
                 }
                 else
                 {

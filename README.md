@@ -7,4 +7,4 @@
 - [ ] Cache Geocoding data to reduce requests
 - [ ] Implement home town and add more settings
 - [ ] Allow customization of data display
-- [ ] Upgrade .NET Framework (curr 4.6.2)
+- [x] Upgrade .NET Framework (now 4.8.1)

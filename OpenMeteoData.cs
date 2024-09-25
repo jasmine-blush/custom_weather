@@ -44,6 +44,9 @@ namespace custom_weather
 
         [JsonProperty("relative_humidity_2m")]
         public string Humidity;
+
+        [JsonProperty("is_day")]
+        public int IsDay;
     }
 
     public struct WeatherResult
