@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Controls;
 using Wox.Plugin;
 
@@ -35,11 +34,8 @@ namespace custom_weather
             {
                 string title = search;
                 string subTitle = "";
-                Stopwatch stopwatch = Stopwatch.StartNew();
+                string icoPath = "Images\\plugin.png";
                 Coordinates coords = WeatherService.GetCoordinates(search).Result;
-                stopwatch.Stop();
-                string getcoordstime = stopwatch.Elapsed.TotalMilliseconds.ToString();
-                string getweathertime = "";
                 if(coords.Name == null)
                 {
                     if(coords.Country == null)
@@ -53,16 +49,19 @@ namespace custom_weather
                 }
                 else
                 {
-                    title = coords.Name + ", " + coords.Country;
-                    stopwatch.Restart();
-                    subTitle = WeatherService.GetWeather(coords).Result;
-                    stopwatch.Stop();
-                    getweathertime = stopwatch.Elapsed.TotalMilliseconds.ToString();
+                    string location = coords.Name + ", " + coords.Country;
+                    WeatherResult weatherResult = WeatherService.GetWeather(location, coords).Result;
+                    title = weatherResult.Title;
+                    subTitle = weatherResult.SubTitle;
+                    if(weatherResult.IcoPath != null)
+                    {
+                        icoPath = weatherResult.IcoPath;
+                    }
                 }
                 results.Add(new Result() {
                     Title = title,
-                    SubTitle = subTitle + " | " + getcoordstime + " | " + getweathertime,
-                    IcoPath = "Images\\plugin.png"
+                    SubTitle = subTitle,
+                    IcoPath = icoPath
                 });
             }
             return results;

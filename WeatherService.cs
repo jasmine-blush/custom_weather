@@ -41,27 +41,43 @@ namespace custom_weather
 
         private static readonly HttpClient _client = new HttpClient();
 
-        public static async Task<string> GetWeather(Coordinates coords)
+        public static async Task<WeatherResult> GetWeather(string location, Coordinates coords)
         {
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
                 { "longitude", coords.Longitude },
-                { "current", "weather_code" }
+                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,relative_humidity_2m" }
             };
-
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
             var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
+
             if(response.IsSuccessStatusCode)
             {
                 string responseString = await response.Content.ReadAsStringAsync();
-                WeatherData weatherData = JsonConvert.DeserializeObject<WeatherData>(responseString);
-                if(_wmoCodes.TryGetValue(weatherData.Current.WeatherCode, out string weatherString))
+                OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
+
+                WeatherResult result = new WeatherResult();
+                result.Title = location + " - ";
+                if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string weatherString))
                 {
-                    return weatherString;
+                    result.Title += weatherString;
                 }
-                return "Unknown Weather";
+                else
+                {
+                    result.Title += "Unknown Weather";
+                }
+                result.Title += " @ " + omData.Current.Temperature + " °C";
+
+                List<string> subTitleData = new List<string> {
+                    "Wind Speed: " + omData.Current.WindSpeed + " km/h",
+                    "Humidity: " + omData.Current.Humidity + " %",
+                    "Surface Pressure: " + omData.Current.Pressure + " hPa"
+                };
+
+                result.SubTitle = string.Join("     ", subTitleData);
+                return result;
             }
-            return "Can't fetch weather data";
+            return new WeatherResult() { SubTitle = "Can't fetch weather data" };
         }
 
         public static async Task<Coordinates> GetCoordinates(string location)

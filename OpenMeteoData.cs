@@ -2,7 +2,7 @@
 
 namespace custom_weather
 {
-    internal struct Coordinates
+    public struct Coordinates
     {
         [JsonProperty("name")]
         public string Name;
@@ -22,15 +22,34 @@ namespace custom_weather
         }
     }
 
-    internal struct WeatherData
+    public struct OpenMeteoData
     {
         [JsonProperty("current")]
         public CurrentData Current;
     }
 
-    internal struct CurrentData
+    public struct CurrentData
     {
         [JsonProperty("weather_code")]
         public int WeatherCode;
+
+        [JsonProperty("temperature_2m")]
+        public string Temperature;
+
+        [JsonProperty("surface_pressure")]
+        public string Pressure;
+
+        [JsonProperty("wind_speed_10m")]
+        public string WindSpeed;
+
+        [JsonProperty("relative_humidity_2m")]
+        public string Humidity;
+    }
+
+    public struct WeatherResult
+    {
+        public string Title;
+        public string SubTitle;
+        public string IcoPath;
     }
 }
