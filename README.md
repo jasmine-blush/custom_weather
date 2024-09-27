@@ -8,4 +8,6 @@
 - [ ] Implement home town and add more settings
 - [ ] Allow customization of data display
 - [ ] Add support for non-latin scripts
+- [ ] Show future weather
+- [ ] Detail view(?)
 - [x] Upgrade .NET Framework (now 4.8.1)
