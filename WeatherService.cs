@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -70,6 +71,7 @@ namespace custom_weather
                 else
                 {
                     result.Title = "Unknown Weather";
+                    result.IcoPath = "Images\\plugin.png";
                 }
                 result.Title += " @ " + omData.Current.Temperature + " °C";
 
@@ -82,7 +84,7 @@ namespace custom_weather
                 result.SubTitle = string.Join("     ", subTitleData);
                 return result;
             }
-            return new WeatherResult() { SubTitle = "Can't fetch weather data" };
+            throw new Exception("Can't fetch weather data");
         }
 
         public static async Task<Coordinates> GetCoordinates(string location)
@@ -99,10 +101,10 @@ namespace custom_weather
                     Coordinates coordinates = JsonConvert.DeserializeObject<Coordinates>(results[0].ToString());
                     return coordinates;
                 }
-                return new Coordinates();
+                throw new Exception("Can't find this city");
             }
 
-            return new Coordinates() { Country = response.StatusCode.ToString() };
+            throw new Exception("Request Error: " + response.StatusCode.ToString());
         }
     }
 }

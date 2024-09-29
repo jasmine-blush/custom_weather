@@ -11,7 +11,7 @@ namespace custom_weather
     public partial class WeatherSettings : UserControl
     {
         private readonly string _hometown_help = "Whenever you type the action keyword by itself, the weather of your home town will be displayed.";
-        private string _hometown = "";
+        public static string UserHometown = "";
 
         public WeatherSettings()
         {
@@ -50,7 +50,7 @@ namespace custom_weather
 
         private void HomeTown_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            _hometown = HomeTown.Text;
+            UserHometown = HomeTownText.Text;
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

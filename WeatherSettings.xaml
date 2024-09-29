@@ -19,7 +19,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <TextBox x:Name="HomeTown" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" Keyboard.KeyDown="HomeTown_KeyDown" LostKeyboardFocus="HomeTown_LostKeyboardFocus"/>
+                <TextBox x:Name="HomeTownText" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" Keyboard.KeyDown="HomeTown_KeyDown" LostKeyboardFocus="HomeTown_LostKeyboardFocus"/>
                 <TextBlock x:Name="HomeTownInfo" Text="(?)" TextAlignment="Center" Width="20" Foreground="Blue"/>
             </StackPanel>
         </Grid>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using Wox.Plugin;
 
@@ -24,47 +25,45 @@ namespace custom_weather
             string search = query.Search;
             if(search.Length <= 2)
             {
-                results.Add(new Result() {
-                    Title = "Default City Name",
-                    SubTitle = "weather type | temp | pressure | humid | ",
-                    IcoPath = "Images\\plugin.png"
-                });
-            }
-            else
-            {
-                string title = search;
-                string subTitle = "";
-                string icoPath = "Images\\plugin.png";
-                Coordinates coords = WeatherService.GetCoordinates(search).Result;
-                if(coords.Name == null)
+                if(WeatherSettings.UserHometown != "")
                 {
-                    if(coords.Country == null)
-                    {
-                        subTitle = "Can't find this city";
-                    }
-                    else
-                    {
-                        subTitle = coords.Country; //outputs http status code
-                    }
+                    Result weatherResult = GetWeather(WeatherSettings.UserHometown);
+                    results.Add(weatherResult);
                 }
                 else
                 {
-                    string location = coords.Name + ", " + coords.Country;
-                    WeatherResult weatherResult = WeatherService.GetWeather(coords).Result;
-                    title = location + " - " + weatherResult.Title;
-                    subTitle = weatherResult.SubTitle;
-                    if(weatherResult.IcoPath != null)
-                    {
-                        icoPath = weatherResult.IcoPath;
-                    }
+                    results.Add(new Result() {
+                        Title = "No home town",
+                        SubTitle = "Add a home town for default weather",
+                        IcoPath = "Images\\plugin.png"
+                    });
                 }
-                results.Add(new Result() {
-                    Title = title,
-                    SubTitle = subTitle,
-                    IcoPath = icoPath
-                });
+            }
+            else
+            {
+                Result weatherResult = GetWeather(search);
+                results.Add(weatherResult);
             }
             return results;
+        }
+
+        private Result GetWeather(string search)
+        {
+            try
+            {
+                Coordinates coords = WeatherService.GetCoordinates(search).Result;
+
+                WeatherResult weatherResult = WeatherService.GetWeather(coords).Result;
+
+                string title = coords.Name + ", " + coords.Country + " - " + weatherResult.Title;
+                string subTitle = weatherResult.SubTitle;
+                string icoPath = weatherResult.IcoPath;
+                return new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath };
+            }
+            catch(Exception e)
+            {
+                return new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" };
+            }
         }
     }
 }
