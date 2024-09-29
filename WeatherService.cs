@@ -41,7 +41,7 @@ namespace custom_weather
 
         private static readonly HttpClient _client = new HttpClient();
 
-        public static async Task<WeatherResult> GetWeather(string location, Coordinates coords)
+        public static async Task<WeatherResult> GetWeather(Coordinates coords)
         {
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
@@ -57,10 +57,9 @@ namespace custom_weather
                 OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
 
                 WeatherResult result = new WeatherResult();
-                result.Title = location + " - ";
                 if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
                 {
-                    result.Title += weatherType[0];
+                    result.Title = weatherType[0];
                     result.IcoPath = weatherType[1];
                     if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
                     {
@@ -70,7 +69,7 @@ namespace custom_weather
                 }
                 else
                 {
-                    result.Title += "Unknown Weather";
+                    result.Title = "Unknown Weather";
                 }
                 result.Title += " @ " + omData.Current.Temperature + " °C";
 

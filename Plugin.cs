@@ -50,8 +50,8 @@ namespace custom_weather
                 else
                 {
                     string location = coords.Name + ", " + coords.Country;
-                    WeatherResult weatherResult = WeatherService.GetWeather(location, coords).Result;
-                    title = weatherResult.Title;
+                    WeatherResult weatherResult = WeatherService.GetWeather(coords).Result;
+                    title = location + " - " + weatherResult.Title;
                     subTitle = weatherResult.SubTitle;
                     if(weatherResult.IcoPath != null)
                     {
