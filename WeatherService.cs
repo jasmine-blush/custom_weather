@@ -110,9 +110,31 @@ namespace custom_weather
                     }
                     return coordinates;
                 }
-                throw new Exception("Can't find this city");
-            }
+                else
+                {
+                    string[] cityAndCountry = location.Split(',');
+                    if(cityAndCountry.Length == 2)
+                    {
+                        List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
 
+                        List<Coordinates> coordinates = new List<Coordinates>();
+                        foreach(Coordinates city in cityCoords)
+                        {
+                            string searchCountry = cityAndCountry[1].ToLower().Trim();
+                            if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
+                            {
+                                coordinates.Add(city);
+                            }
+                        }
+                        if(coordinates.Count > 0)
+                        {
+                            return coordinates;
+                        }
+                    }
+                }
+                throw new Exception("Can't find this city");
+
+            }
             throw new Exception("Request Error: " + response.StatusCode.ToString());
         }
     }

@@ -64,7 +64,7 @@ namespace custom_weather
                 {
                     WeatherResult weatherResult = WeatherService.GetWeather(coord).Result;
 
-                    string title = coord.Name + ", " + coord.CountryCode;
+                    string title = coord.Name + ", " + coord.Country;
                     if(HasMultipleInSameCountry(coord, coords))
                     {
                         if(coord.Region != null)
@@ -96,7 +96,7 @@ namespace custom_weather
         {
             foreach(Coordinates other in coords)
             {
-                if(other.Name == coord.Name && other.CountryCode == coord.CountryCode && !other.Equals(coord))
+                if(other.Name == coord.Name && other.Country == coord.Country && !other.Equals(coord))
                 {
                     return true;
                 }
