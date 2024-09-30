@@ -63,6 +63,7 @@
     </Page>
     <Compile Include="Plugin.cs" />
     <Compile Include="OpenMeteoData.cs" />
+    <Compile Include="SettingsSave.cs" />
     <Compile Include="WeatherService.cs" />
     <Compile Include="WeatherSettings.xaml.cs">
       <DependentUpon>WeatherSettings.xaml</DependentUpon>

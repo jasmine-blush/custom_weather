@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace custom_weather
 {
@@ -11,9 +10,9 @@ namespace custom_weather
     public partial class WeatherSettings : UserControl
     {
         private readonly string _hometown_help = "Whenever you type the action keyword by itself, the weather of your home town will be displayed.";
-        public static string UserHometown = "";
+        private readonly SettingsSave _settings;
 
-        public WeatherSettings()
+        public WeatherSettings(SettingsSave settings)
         {
             InitializeComponent();
 
@@ -21,36 +20,26 @@ namespace custom_weather
                 Content = _hometown_help
             };
             ToolTipService.SetInitialShowDelay(tt, 0);
-            HomeTownInfo.MouseLeftButtonDown += (s, e) => {
+            HometownInfo.MouseLeftButtonDown += (s, e) => {
                 tt.IsOpen = true;
             };
-            HomeTownInfo.MouseLeave += (s, e) => {
+            HometownInfo.MouseLeave += (s, e) => {
                 tt.IsOpen = false;
             };
-            HomeTownInfo.ToolTip = tt;
+            HometownInfo.ToolTip = tt;
+
+            _settings = settings;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-
+            HometownTextbox.Text = _settings.Hometown;
         }
 
-        private void UserControl_MouseDown(object sender, MouseButtonEventArgs e)
+        private void HometownTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Keyboard.ClearFocus();
-        }
-
-        private void HomeTown_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.Key == Key.Enter)
-            {
-                Keyboard.ClearFocus();
-            }
-        }
-
-        private void HomeTown_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            UserHometown = HomeTownText.Text;
+            _settings.Hometown = HometownTextbox.Text;
+            _settings.Save();
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:custom_weather"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
-             d:DesignHeight="300" d:DesignWidth="465" MouseDown="UserControl_MouseDown">
+             d:DesignHeight="300" d:DesignWidth="465">
     <DockPanel Margin="20,20,20,20">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -19,8 +19,8 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <TextBox x:Name="HomeTownText" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" Keyboard.KeyDown="HomeTown_KeyDown" LostKeyboardFocus="HomeTown_LostKeyboardFocus"/>
-                <TextBlock x:Name="HomeTownInfo" Text="(?)" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                <TextBox x:Name="HometownTextbox" Text="" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" TextChanged="HometownTextbox_TextChanged"/>
+                <TextBlock x:Name="HometownInfo" Text="(?)" TextAlignment="Center" Width="20" Foreground="Blue"/>
             </StackPanel>
         </Grid>
         <Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom">

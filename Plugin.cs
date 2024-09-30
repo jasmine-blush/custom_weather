@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Controls;
+using Newtonsoft.Json;
 using Wox.Plugin;
 
 namespace custom_weather
@@ -8,15 +10,30 @@ namespace custom_weather
     internal class Plugin : IPlugin, ISettingProvider
     {
         private PluginInitContext _context;
+        private SettingsSave _settings;
 
         public Control CreateSettingPanel()
         {
-            return new WeatherSettings();
+            return new WeatherSettings(_settings);
         }
 
         public void Init(PluginInitContext context)
         {
             _context = context;
+            string configPath = _context.CurrentPluginMetadata.PluginDirectory + "\\config.json";
+            if(File.Exists(configPath))
+            {
+                _settings = JsonConvert.DeserializeObject<SettingsSave>(File.ReadAllText(configPath));
+                if(_settings == null)
+                {
+                    _settings = new SettingsSave();
+                }
+                _settings.ConfigPath = configPath;
+            }
+            else
+            {
+                _settings = new SettingsSave() { ConfigPath = configPath };
+            }
         }
 
         public List<Result> Query(Query query)
@@ -25,9 +42,9 @@ namespace custom_weather
             string search = query.Search;
             if(search.Length <= 2)
             {
-                if(WeatherSettings.UserHometown != "")
+                if(!string.IsNullOrEmpty(_settings.Hometown))
                 {
-                    List<Result> weatherResults = GetWeather(WeatherSettings.UserHometown);
+                    List<Result> weatherResults = GetWeather(_settings.Hometown);
                     foreach(Result weatherResult in weatherResults)
                     {
                         results.Add(weatherResult);
