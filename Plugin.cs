@@ -27,8 +27,11 @@ namespace custom_weather
             {
                 if(WeatherSettings.UserHometown != "")
                 {
-                    Result weatherResult = GetWeather(WeatherSettings.UserHometown);
-                    results.Add(weatherResult);
+                    List<Result> weatherResults = GetWeather(WeatherSettings.UserHometown);
+                    foreach(Result weatherResult in weatherResults)
+                    {
+                        results.Add(weatherResult);
+                    }
                 }
                 else
                 {
@@ -41,29 +44,64 @@ namespace custom_weather
             }
             else
             {
-                Result weatherResult = GetWeather(search);
-                results.Add(weatherResult);
+                List<Result> weatherResults = GetWeather(search);
+                foreach(Result weatherResult in weatherResults)
+                {
+                    results.Add(weatherResult);
+                }
             }
             return results;
         }
 
-        private Result GetWeather(string search)
+        private List<Result> GetWeather(string search)
         {
             try
             {
-                Coordinates coords = WeatherService.GetCoordinates(search).Result;
+                List<Coordinates> coords = WeatherService.GetCoordinates(search).Result;
 
-                WeatherResult weatherResult = WeatherService.GetWeather(coords).Result;
+                List<Result> results = new List<Result>();
+                foreach(Coordinates coord in coords)
+                {
+                    WeatherResult weatherResult = WeatherService.GetWeather(coord).Result;
 
-                string title = coords.Name + ", " + coords.Country + " - " + weatherResult.Title;
-                string subTitle = weatherResult.SubTitle;
-                string icoPath = weatherResult.IcoPath;
-                return new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath };
+                    string title = coord.Name + ", " + coord.CountryCode;
+                    if(HasMultipleInSameCountry(coord, coords))
+                    {
+                        if(coord.Region != null)
+                        {
+                            title += " (" + coord.Region + ")";
+                        }
+                        else if(coord.PostCodes != null)
+                        {
+                            if(coord.PostCodes.Length > 0)
+                            {
+                                title += " (Post: " + coord.PostCodes[0] + ")";
+                            }
+                        }
+                    }
+                    title += " - " + weatherResult.Title;
+                    string subTitle = weatherResult.SubTitle;
+                    string icoPath = weatherResult.IcoPath;
+                    results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath });
+                }
+                return results;
             }
             catch(Exception e)
             {
-                return new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" };
+                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" } };
             }
+        }
+
+        private bool HasMultipleInSameCountry(Coordinates coord, List<Coordinates> coords)
+        {
+            foreach(Coordinates other in coords)
+            {
+                if(other.Name == coord.Name && other.CountryCode == coord.CountryCode && !other.Equals(coord))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

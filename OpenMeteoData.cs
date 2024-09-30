@@ -10,11 +10,20 @@ namespace custom_weather
         [JsonProperty("country")]
         public string Country;
 
+        [JsonProperty("country_code")]
+        public string CountryCode;
+
         [JsonProperty("latitude")]
         public string Latitude;
 
         [JsonProperty("longitude")]
         public string Longitude;
+
+        [JsonProperty("admin1")]
+        public string Region;
+
+        [JsonProperty("postcodes")]
+        public string[] PostCodes;
 
         public override string ToString()
         {

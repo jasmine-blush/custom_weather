@@ -92,9 +92,9 @@ namespace custom_weather
             throw new Exception("Can't fetch weather data");
         }
 
-        public static async Task<Coordinates> GetCoordinates(string location)
+        public static async Task<List<Coordinates>> GetCoordinates(string location)
         {
-            string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=1", location);
+            string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
             var response = await _client.GetAsync(requestUrl);
 
             if(response.IsSuccessStatusCode)
@@ -103,7 +103,11 @@ namespace custom_weather
                 var jsonDocument = JsonDocument.Parse(responseString);
                 if(jsonDocument.RootElement.TryGetProperty("results", out JsonElement results))
                 {
-                    Coordinates coordinates = JsonConvert.DeserializeObject<Coordinates>(results[0].ToString());
+                    List<Coordinates> coordinates = new List<Coordinates>();
+                    foreach(JsonElement result in results.EnumerateArray())
+                    {
+                        coordinates.Add(JsonConvert.DeserializeObject<Coordinates>(result.ToString()));
+                    }
                     return coordinates;
                 }
                 throw new Exception("Can't find this city");
