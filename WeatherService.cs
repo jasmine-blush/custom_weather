@@ -47,7 +47,8 @@ namespace custom_weather
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
                 { "longitude", coords.Longitude },
-                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,relative_humidity_2m,is_day" }
+                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day,precipitation_probability,apparent_temperature" },
+                { "daily", "temperature_2m_min,temperature_2m_max" }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
             var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
@@ -76,9 +77,13 @@ namespace custom_weather
                 result.Title += " @ " + omData.Current.Temperature + " °C";
 
                 List<string> subTitleData = new List<string> {
+                    "Max: " + omData.Daily.MaxTemps[0] + " °C",
+                    "Min: " + omData.Daily.MinTemps[0] + " °C",
                     "Wind Speed: " + omData.Current.WindSpeed + " km/h",
+                    "Direction: " + omData.Current.WindDirection + "°",
+                    "Feels Like: " + omData.Current.FeelsLike + " °C",
+                    "Rain Chance: " + omData.Current.RainChance + " %",
                     "Humidity: " + omData.Current.Humidity + " %",
-                    "Surface Pressure: " + omData.Current.Pressure + " hPa"
                 };
 
                 result.SubTitle = string.Join("     ", subTitleData);
