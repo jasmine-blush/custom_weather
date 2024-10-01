@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -41,12 +42,16 @@ namespace custom_weather
 
         private static readonly HttpClient _client = new HttpClient();
 
-        public static async Task<WeatherResult> GetWeather(string location, Coordinates coords)
+        public static async Task<WeatherResult> GetWeather(Coordinates coords, SettingsSave settings)
         {
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
                 { "longitude", coords.Longitude },
-                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,relative_humidity_2m,is_day" }
+                { "temperature_unit", settings.TempUnit.ToString() },
+                { "wind_speed_unit", settings.WindUnit.ToString() },
+                { "precipitation_unit", settings.RainUnit.ToString() },
+                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day,precipitation_probability,apparent_temperature" },
+                { "daily", "temperature_2m_min,temperature_2m_max" }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
             var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
@@ -57,10 +62,9 @@ namespace custom_weather
                 OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
 
                 WeatherResult result = new WeatherResult();
-                result.Title = location + " - ";
                 if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
                 {
-                    result.Title += weatherType[0];
+                    result.Title = weatherType[0];
                     result.IcoPath = weatherType[1];
                     if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
                     {
@@ -70,25 +74,30 @@ namespace custom_weather
                 }
                 else
                 {
-                    result.Title += "Unknown Weather";
+                    result.Title = "Unknown Weather";
+                    result.IcoPath = "Images\\plugin.png";
                 }
-                result.Title += " @ " + omData.Current.Temperature + " °C";
+                result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
                 List<string> subTitleData = new List<string> {
-                    "Wind Speed: " + omData.Current.WindSpeed + " km/h",
+                    "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
+                    "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
+                    "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
+                    "Direction: " + omData.Current.WindDirection + "°",
+                    "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
+                    "Rain Chance: " + omData.Current.RainChance + " %",
                     "Humidity: " + omData.Current.Humidity + " %",
-                    "Surface Pressure: " + omData.Current.Pressure + " hPa"
                 };
 
                 result.SubTitle = string.Join("     ", subTitleData);
                 return result;
             }
-            return new WeatherResult() { SubTitle = "Can't fetch weather data" };
+            throw new Exception("Can't fetch weather data");
         }
 
-        public static async Task<Coordinates> GetCoordinates(string location)
+        public static async Task<List<Coordinates>> GetCoordinates(string location)
         {
-            string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=1", location);
+            string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
             var response = await _client.GetAsync(requestUrl);
 
             if(response.IsSuccessStatusCode)
@@ -97,13 +106,39 @@ namespace custom_weather
                 var jsonDocument = JsonDocument.Parse(responseString);
                 if(jsonDocument.RootElement.TryGetProperty("results", out JsonElement results))
                 {
-                    Coordinates coordinates = JsonConvert.DeserializeObject<Coordinates>(results[0].ToString());
+                    List<Coordinates> coordinates = new List<Coordinates>();
+                    foreach(JsonElement result in results.EnumerateArray())
+                    {
+                        coordinates.Add(JsonConvert.DeserializeObject<Coordinates>(result.ToString()));
+                    }
                     return coordinates;
                 }
-                return new Coordinates();
-            }
+                else
+                {
+                    string[] cityAndCountry = location.Split(',');
+                    if(cityAndCountry.Length == 2)
+                    {
+                        List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
 
-            return new Coordinates() { Country = response.StatusCode.ToString() };
+                        List<Coordinates> coordinates = new List<Coordinates>();
+                        foreach(Coordinates city in cityCoords)
+                        {
+                            string searchCountry = cityAndCountry[1].ToLower().Trim();
+                            if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
+                            {
+                                coordinates.Add(city);
+                            }
+                        }
+                        if(coordinates.Count > 0)
+                        {
+                            return coordinates;
+                        }
+                    }
+                }
+                throw new Exception("Can't find this city");
+
+            }
+            throw new Exception("Request Error: " + response.StatusCode.ToString());
         }
     }
 }

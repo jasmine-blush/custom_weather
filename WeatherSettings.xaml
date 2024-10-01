@@ -6,21 +6,45 @@
              xmlns:local="clr-namespace:custom_weather"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
-             d:DesignHeight="300" d:DesignWidth="465" MouseDown="UserControl_MouseDown">
+             d:DesignHeight="300" d:DesignWidth="465">
     <DockPanel Margin="20,20,20,20">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition MinHeight="200" Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
-                <TextBox x:Name="HomeTown" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" Keyboard.KeyDown="HomeTown_KeyDown" LostKeyboardFocus="HomeTown_LostKeyboardFocus"/>
-                <TextBlock x:Name="HomeTownInfo" Text="(?)" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                <TextBox x:Name="HometownTextbox" Text="" Height="20" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" TextChanged="HometownTextbox_TextChanged"/>
+                <TextBlock x:Name="HometownInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+            </StackPanel>
+            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Center" Text="Units" Margin="0,0,5,0"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Temp:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="TempUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="TempUnit_SelectionChanged">
+                    <ComboBoxItem>°C</ComboBoxItem>
+                    <ComboBoxItem>°F</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="TempUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Wind:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="WindUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="WindUnit_SelectionChanged">
+                    <ComboBoxItem>km/h</ComboBoxItem>
+                    <ComboBoxItem>m/s</ComboBoxItem>
+                    <ComboBoxItem>mph</ComboBoxItem>
+                    <ComboBoxItem>kn</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="WindUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Rain:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="RainUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="RainUnit_SelectionChanged">
+                    <ComboBoxItem>mm</ComboBoxItem>
+                    <ComboBoxItem>inch</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="RainUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
             </StackPanel>
         </Grid>
         <Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
