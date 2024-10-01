@@ -1,10 +1,10 @@
 {
-    "ID":"280f9ccd-a4a7-407b-b51f-0455441fd605",
+    "ID":"280f9ccda4a7407bb51f0455441fd605",
     "ActionKeyword":"weather",
     "Name":"Custom.Weather",
     "Description":"Customizable weather plugin for Wox",
     "Author":"Aimi",
-    "Version":"1.0.1",
+    "Version":"1.0.2",
     "Language":"csharp",
     "Website":"https://github.com/jasmine-blush/custom_weather",
     "IcoPath":"Images\\plugin.png",
