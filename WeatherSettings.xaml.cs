@@ -10,36 +10,77 @@ namespace custom_weather
     public partial class WeatherSettings : UserControl
     {
         private readonly string _hometown_help = "Whenever you type the action keyword by itself, the weather of your home town will be displayed.";
+        private readonly string _temp_help = "Set the default unit for Temperature.";
+        private readonly string _wind_help = "Set the default unit for Wind Speed.";
+        private readonly string _rain_help = "Set the default unit for Precipitation amount.";
         private readonly SettingsSave _settings;
 
         public WeatherSettings(SettingsSave settings)
         {
             InitializeComponent();
 
-            ToolTip tt = new ToolTip {
-                Content = _hometown_help
-            };
-            ToolTipService.SetInitialShowDelay(tt, 0);
-            HometownInfo.MouseLeftButtonDown += (s, e) => {
-                tt.IsOpen = true;
-            };
-            HometownInfo.MouseLeave += (s, e) => {
-                tt.IsOpen = false;
-            };
-            HometownInfo.ToolTip = tt;
+            CreateToolTip(HometownInfo, _hometown_help);
+            CreateToolTip(TempUnitInfo, _temp_help);
+            CreateToolTip(WindUnitInfo, _wind_help);
+            CreateToolTip(RainUnitInfo, _rain_help);
 
             _settings = settings;
+        }
+
+        private void CreateToolTip(TextBlock element, string tooltip)
+        {
+            ToolTip tt = new ToolTip {
+                Content = tooltip
+            };
+            ToolTipService.SetInitialShowDelay(tt, 0);
+            element.MouseLeftButtonDown += (s, e) => {
+                tt.IsOpen = true;
+            };
+            element.MouseLeave += (s, e) => {
+                tt.IsOpen = false;
+            };
+            element.ToolTip = tt;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             HometownTextbox.Text = _settings.Hometown;
+            TempUnitComboBox.SelectedIndex = (int)_settings.TempUnit;
+            WindUnitComboBox.SelectedIndex = (int)_settings.WindUnit;
+            RainUnitComboBox.SelectedIndex = (int)_settings.RainUnit;
         }
 
         private void HometownTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
             _settings.Hometown = HometownTextbox.Text;
             _settings.Save();
+        }
+
+        private void TempUnit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.TempUnit = (TemperatureUnit)TempUnitComboBox.SelectedIndex;
+                _settings.Save();
+            }
+        }
+
+        private void WindUnit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WindUnit = (WindSpeedUnit)WindUnitComboBox.SelectedIndex;
+                _settings.Save();
+            }
+        }
+
+        private void RainUnit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.RainUnit = (PrecipitationUnit)RainUnitComboBox.SelectedIndex;
+                _settings.Save();
+            }
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

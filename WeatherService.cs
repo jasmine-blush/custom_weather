@@ -42,11 +42,14 @@ namespace custom_weather
 
         private static readonly HttpClient _client = new HttpClient();
 
-        public static async Task<WeatherResult> GetWeather(Coordinates coords)
+        public static async Task<WeatherResult> GetWeather(Coordinates coords, SettingsSave settings)
         {
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
                 { "longitude", coords.Longitude },
+                { "temperature_unit", settings.TempUnit.ToString() },
+                { "wind_speed_unit", settings.WindUnit.ToString() },
+                { "precipitation_unit", settings.RainUnit.ToString() },
                 { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day,precipitation_probability,apparent_temperature" },
                 { "daily", "temperature_2m_min,temperature_2m_max" }
             };
@@ -74,14 +77,14 @@ namespace custom_weather
                     result.Title = "Unknown Weather";
                     result.IcoPath = "Images\\plugin.png";
                 }
-                result.Title += " @ " + omData.Current.Temperature + " °C";
+                result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
                 List<string> subTitleData = new List<string> {
-                    "Max: " + omData.Daily.MaxTemps[0] + " °C",
-                    "Min: " + omData.Daily.MinTemps[0] + " °C",
-                    "Wind Speed: " + omData.Current.WindSpeed + " km/h",
+                    "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
+                    "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
+                    "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
                     "Direction: " + omData.Current.WindDirection + "°",
-                    "Feels Like: " + omData.Current.FeelsLike + " °C",
+                    "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
                     "Rain Chance: " + omData.Current.RainChance + " %",
                     "Humidity: " + omData.Current.Humidity + " %",
                 };

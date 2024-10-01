@@ -29,6 +29,7 @@ namespace custom_weather
                     _settings = new SettingsSave();
                 }
                 _settings.ConfigPath = configPath;
+                _settings.Validate();
             }
             else
             {
@@ -79,7 +80,7 @@ namespace custom_weather
                 List<Result> results = new List<Result>();
                 foreach(Coordinates coord in coords)
                 {
-                    WeatherResult weatherResult = WeatherService.GetWeather(coord).Result;
+                    WeatherResult weatherResult = WeatherService.GetWeather(coord, _settings).Result;
 
                     string title = coord.Name + ", " + coord.Country;
                     if(HasMultipleInSameCountry(coord, coords))
