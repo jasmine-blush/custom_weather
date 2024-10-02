@@ -54,33 +54,37 @@ namespace custom_weather
                 { "daily", "temperature_2m_min,temperature_2m_max" }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
-            var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
 
-            if(response.IsSuccessStatusCode)
+            string requestKey = body.ReadAsStringAsync().Result;
+            if(!WeatherCache.HasCached(requestKey))
             {
-                string responseString = await response.Content.ReadAsStringAsync();
-                OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
+                var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
 
-                WeatherResult result = new WeatherResult();
-                if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
+                if(response.IsSuccessStatusCode)
                 {
-                    result.Title = weatherType[0];
-                    result.IcoPath = weatherType[1];
-                    if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
+
+                    WeatherResult result = new WeatherResult();
+                    if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
                     {
-                        result.IcoPath += "_night";
+                        result.Title = weatherType[0];
+                        result.IcoPath = weatherType[1];
+                        if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
+                        {
+                            result.IcoPath += "_night";
+                        }
+                        result.IcoPath += ".png";
                     }
-                    result.IcoPath += ".png";
-                }
-                else
-                {
-                    result.Title = "Unknown Weather";
-                    result.IcoPath = "Images\\plugin.png";
-                }
-                result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
+                    else
+                    {
+                        result.Title = "Unknown Weather";
+                        result.IcoPath = "Images\\plugin.png";
+                    }
+                    result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
-                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
-                List<string> subTitleData = new List<string> {
+                    string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
+                    List<string> subTitleData = new List<string> {
                     "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
                     "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
                     "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
@@ -90,10 +94,13 @@ namespace custom_weather
                     "Humidity: " + omData.Current.Humidity + " %",
                 };
 
-                result.SubTitle = string.Join("     ", subTitleData);
-                return result;
+                    result.SubTitle = string.Join("     ", subTitleData);
+                    WeatherCache.Cache(requestKey, result);
+                    return result;
+                }
+                throw new Exception("Can't fetch weather data");
             }
-            throw new Exception("Can't fetch weather data");
+            return WeatherCache.Retrieve(requestKey);
         }
 
         private static string ToCompass(string direction)
@@ -135,48 +142,53 @@ namespace custom_weather
 
         public static async Task<List<Coordinates>> GetCoordinates(string location)
         {
-            string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
-            var response = await _client.GetAsync(requestUrl);
-
-            if(response.IsSuccessStatusCode)
+            if(!GeocodeCache.HasCached(location))
             {
-                var responseString = await response.Content.ReadAsStringAsync();
-                var jsonDocument = JsonDocument.Parse(responseString);
-                if(jsonDocument.RootElement.TryGetProperty("results", out JsonElement results))
-                {
-                    List<Coordinates> coordinates = new List<Coordinates>();
-                    foreach(JsonElement result in results.EnumerateArray())
-                    {
-                        coordinates.Add(JsonConvert.DeserializeObject<Coordinates>(result.ToString()));
-                    }
-                    return coordinates;
-                }
-                else
-                {
-                    string[] cityAndCountry = location.Split(',');
-                    if(cityAndCountry.Length == 2)
-                    {
-                        List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
+                string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
+                var response = await _client.GetAsync(requestUrl);
 
+                if(response.IsSuccessStatusCode)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var jsonDocument = JsonDocument.Parse(responseString);
+                    if(jsonDocument.RootElement.TryGetProperty("results", out JsonElement results))
+                    {
                         List<Coordinates> coordinates = new List<Coordinates>();
-                        foreach(Coordinates city in cityCoords)
+                        foreach(JsonElement result in results.EnumerateArray())
                         {
-                            string searchCountry = cityAndCountry[1].ToLower().Trim();
-                            if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
+                            coordinates.Add(JsonConvert.DeserializeObject<Coordinates>(result.ToString()));
+                        }
+                        GeocodeCache.Cache(location, coordinates);
+                        return coordinates;
+                    }
+                    else
+                    {
+                        string[] cityAndCountry = location.Split(',');
+                        if(cityAndCountry.Length == 2)
+                        {
+                            List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
+
+                            List<Coordinates> coordinates = new List<Coordinates>();
+                            foreach(Coordinates city in cityCoords)
                             {
-                                coordinates.Add(city);
+                                string searchCountry = cityAndCountry[1].ToLower().Trim();
+                                if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
+                                {
+                                    coordinates.Add(city);
+                                }
+                            }
+                            if(coordinates.Count > 0)
+                            {
+                                GeocodeCache.Cache(location, coordinates);
+                                return coordinates;
                             }
                         }
-                        if(coordinates.Count > 0)
-                        {
-                            return coordinates;
-                        }
                     }
+                    throw new Exception("Can't find this city");
                 }
-                throw new Exception("Can't find this city");
-
+                throw new Exception("Request Error: " + response.StatusCode.ToString());
             }
-            throw new Exception("Request Error: " + response.StatusCode.ToString());
+            return GeocodeCache.Retrieve(location);
         }
     }
 }

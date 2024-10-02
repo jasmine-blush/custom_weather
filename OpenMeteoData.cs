@@ -81,6 +81,7 @@ namespace custom_weather
 
     public struct WeatherResult
     {
+        public long CacheTime;
         public string Title;
         public string SubTitle;
         public string IcoPath;
