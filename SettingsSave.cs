@@ -22,6 +22,9 @@ namespace custom_weather
         [JsonProperty("rainunit")]
         public PrecipitationUnit RainUnit = PrecipitationUnit.mm;
 
+        [JsonProperty("directionunit")]
+        public DirectionUnit DirectionUnit = DirectionUnit.degrees;
+
         public void Validate()
         {
             if(!Enum.IsDefined(typeof(TemperatureUnit), TempUnit))
@@ -35,6 +38,10 @@ namespace custom_weather
             if(!Enum.IsDefined(typeof(PrecipitationUnit), RainUnit))
             {
                 RainUnit = PrecipitationUnit.mm;
+            }
+            if(!Enum.IsDefined(typeof(DirectionUnit), DirectionUnit))
+            {
+                DirectionUnit = DirectionUnit.degrees;
             }
         }
 
@@ -75,6 +82,15 @@ namespace custom_weather
 
         [Description("inch")]
         inch = 1,
+    }
+
+    public enum DirectionUnit
+    {
+        [Description("°")]
+        degrees = 0,
+
+        [Description("")]
+        compass = 1,
     }
 
     public static class EnumExtension

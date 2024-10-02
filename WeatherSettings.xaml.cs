@@ -13,6 +13,7 @@ namespace custom_weather
         private readonly string _temp_help = "Set the default unit for Temperature.";
         private readonly string _wind_help = "Set the default unit for Wind Speed.";
         private readonly string _rain_help = "Set the default unit for Precipitation amount.";
+        private readonly string _direction_help = "Set whether Wind Direction is displayed in degrees or compass directions.";
         private readonly SettingsSave _settings;
 
         public WeatherSettings(SettingsSave settings)
@@ -23,6 +24,7 @@ namespace custom_weather
             CreateToolTip(TempUnitInfo, _temp_help);
             CreateToolTip(WindUnitInfo, _wind_help);
             CreateToolTip(RainUnitInfo, _rain_help);
+            CreateToolTip(DirectionUnitInfo, _direction_help);
 
             _settings = settings;
         }
@@ -48,6 +50,7 @@ namespace custom_weather
             TempUnitComboBox.SelectedIndex = (int)_settings.TempUnit;
             WindUnitComboBox.SelectedIndex = (int)_settings.WindUnit;
             RainUnitComboBox.SelectedIndex = (int)_settings.RainUnit;
+            DirectionUnitComboBox.SelectedIndex = (int)_settings.DirectionUnit;
         }
 
         private void HometownTextbox_TextChanged(object sender, TextChangedEventArgs e)
@@ -79,6 +82,15 @@ namespace custom_weather
             if(IsLoaded)
             {
                 _settings.RainUnit = (PrecipitationUnit)RainUnitComboBox.SelectedIndex;
+                _settings.Save();
+            }
+        }
+
+        private void DirectionUnit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.DirectionUnit = (DirectionUnit)DirectionUnitComboBox.SelectedIndex;
                 _settings.Save();
             }
         }

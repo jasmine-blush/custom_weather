@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:custom_weather"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
-             d:DesignHeight="300" d:DesignWidth="465">
+             d:DesignHeight="300" d:DesignWidth="600">
     <DockPanel Margin="20,20,20,20">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -15,7 +15,7 @@
                 <RowDefinition MinHeight="200" Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
@@ -45,6 +45,12 @@
                     <ComboBoxItem>inch</ComboBoxItem>
                 </ComboBox>
                 <TextBlock x:Name="RainUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Rain:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="DirectionUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="DirectionUnit_SelectionChanged">
+                    <ComboBoxItem>Degrees</ComboBoxItem>
+                    <ComboBoxItem>Compass</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="DirectionUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
             </StackPanel>
         </Grid>
         <Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom">

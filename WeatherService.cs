@@ -79,11 +79,12 @@ namespace custom_weather
                 }
                 result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
+                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
                 List<string> subTitleData = new List<string> {
                     "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
                     "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
                     "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
-                    "Direction: " + omData.Current.WindDirection + "°",
+                    "Direction: " + windDirection + settings.DirectionUnit.GetDescription(),
                     "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
                     "Rain Chance: " + omData.Current.RainChance + " %",
                     "Humidity: " + omData.Current.Humidity + " %",
@@ -93,6 +94,43 @@ namespace custom_weather
                 return result;
             }
             throw new Exception("Can't fetch weather data");
+        }
+
+        private static string ToCompass(string direction)
+        {
+            Int32.TryParse(direction, out int degrees);
+            if(degrees >= 22 && degrees <= 68)
+            {
+                return "NE";
+            }
+            else if(degrees > 68 && degrees < 112)
+            {
+                return "E";
+            }
+            else if(degrees >= 112 && degrees <= 158)
+            {
+                return "SE";
+            }
+            else if(degrees > 158 && degrees < 202)
+            {
+                return "S";
+            }
+            else if(degrees >= 202 && degrees <= 248)
+            {
+                return "SW";
+            }
+            else if(degrees > 248 && degrees < 292)
+            {
+                return "W";
+            }
+            else if(degrees >= 292 && degrees <= 338)
+            {
+                return "NW";
+            }
+            else
+            {
+                return "N";
+            }
         }
 
         public static async Task<List<Coordinates>> GetCoordinates(string location)
