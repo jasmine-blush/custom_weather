@@ -7,7 +7,7 @@
 
 ## TODO ##
 - [ ] Retrieve and show more weather data
-- [ ] Cache Geocoding data to reduce requests
+- [x] Cache Geocoding data to reduce requests
 - [ ] Implement home town and add more settings
 - [ ] Allow customization of data display
 - [ ] Add support for non-latin scripts
