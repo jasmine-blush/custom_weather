@@ -56,7 +56,7 @@ namespace custom_weather
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
 
             string requestKey = body.ReadAsStringAsync().Result;
-            if(!WeatherCache.HasCached(requestKey))
+            if(!WeatherCache.HasCached(requestKey, Int32.Parse(settings.CacheDuration.GetDescription())))
             {
                 var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
 

@@ -33,7 +33,6 @@ namespace custom_weather
     internal static class WeatherCache
     {
         private static Dictionary<string, WeatherResult> _cache = new Dictionary<string, WeatherResult>();
-        private static readonly int _cache_duration = 5; // How many minutes should weather be cached
 
         internal static void Cache(string key, WeatherResult value)
         {
@@ -48,13 +47,13 @@ namespace custom_weather
             }
         }
 
-        internal static bool HasCached(string key)
+        internal static bool HasCached(string key, int cacheDuration)
         {
             if(_cache.ContainsKey(key))
             {
                 WeatherResult result = _cache[key];
                 long currentTimeInMinutes = DateTime.Now.Ticks / TimeSpan.TicksPerMinute;
-                if(currentTimeInMinutes - result.CacheTime >= _cache_duration) // Cache expired
+                if(currentTimeInMinutes - result.CacheTime >= cacheDuration) // Cache expired
                 {
                     _cache.Remove(key);
                     return false;

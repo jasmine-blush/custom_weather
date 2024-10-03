@@ -21,7 +21,15 @@
             <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
                 <TextBox x:Name="HometownTextbox" Text="" Height="20" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" TextChanged="HometownTextbox_TextChanged"/>
-                <TextBlock x:Name="HometownInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                <TextBlock x:Name="HometownInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Cache Duration:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="CacheDurationComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="CacheDuration_SelectionChanged">
+                    <ComboBoxItem>5 mins</ComboBoxItem>
+                    <ComboBoxItem>15 mins</ComboBoxItem>
+                    <ComboBoxItem>1 hour</ComboBoxItem>
+                    <ComboBoxItem>1 day</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="CacheDurationInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
             </StackPanel>
             <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Center" Text="Units" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">

@@ -10,6 +10,7 @@ namespace custom_weather
     public partial class WeatherSettings : UserControl
     {
         private readonly string _hometown_help = "Whenever you type the action keyword by itself, the weather of your home town will be displayed.";
+        private readonly string _cache_help = "Weather data on Open-Meteo is updated every 15mins. Set how long the plugin should cache weather data for before updating it.";
         private readonly string _temp_help = "Set the default unit for Temperature.";
         private readonly string _wind_help = "Set the default unit for Wind Speed.";
         private readonly string _rain_help = "Set the default unit for Precipitation amount.";
@@ -21,6 +22,7 @@ namespace custom_weather
             InitializeComponent();
 
             CreateToolTip(HometownInfo, _hometown_help);
+            CreateToolTip(CacheDurationInfo, _cache_help);
             CreateToolTip(TempUnitInfo, _temp_help);
             CreateToolTip(WindUnitInfo, _wind_help);
             CreateToolTip(RainUnitInfo, _rain_help);
@@ -47,6 +49,7 @@ namespace custom_weather
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             HometownTextbox.Text = _settings.Hometown;
+            CacheDurationComboBox.SelectedIndex = (int)_settings.CacheDuration;
             TempUnitComboBox.SelectedIndex = (int)_settings.TempUnit;
             WindUnitComboBox.SelectedIndex = (int)_settings.WindUnit;
             RainUnitComboBox.SelectedIndex = (int)_settings.RainUnit;
@@ -55,8 +58,20 @@ namespace custom_weather
 
         private void HometownTextbox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _settings.Hometown = HometownTextbox.Text;
-            _settings.Save();
+            if(IsLoaded)
+            {
+                _settings.Hometown = HometownTextbox.Text;
+                _settings.Save();
+            }
+        }
+
+        private void CacheDuration_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.CacheDuration = (CacheDurations)CacheDurationComboBox.SelectedIndex;
+                _settings.Save();
+            }
         }
 
         private void TempUnit_SelectionChanged(object sender, SelectionChangedEventArgs e)

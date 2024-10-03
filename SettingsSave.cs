@@ -13,6 +13,9 @@ namespace custom_weather
         [JsonProperty("hometown")]
         public string Hometown = "";
 
+        [JsonProperty("cacheduration")]
+        public CacheDurations CacheDuration = CacheDurations.fivemins;
+
         [JsonProperty("tempunit")]
         public TemperatureUnit TempUnit = TemperatureUnit.celsius;
 
@@ -27,6 +30,10 @@ namespace custom_weather
 
         public void Validate()
         {
+            if(!Enum.IsDefined(typeof(CacheDurations), CacheDuration))
+            {
+                CacheDuration = CacheDurations.fivemins;
+            }
             if(!Enum.IsDefined(typeof(TemperatureUnit), TempUnit))
             {
                 TempUnit = TemperatureUnit.celsius;
@@ -49,6 +56,21 @@ namespace custom_weather
         {
             File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(this));
         }
+    }
+
+    public enum CacheDurations
+    {
+        [Description("5")]
+        fivemins = 0,
+
+        [Description("15")]
+        fifteenmins = 1,
+
+        [Description("60")]
+        onehour = 2,
+
+        [Description("1440")]
+        oneday = 3,
     }
 
     public enum TemperatureUnit
