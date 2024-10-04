@@ -48,8 +48,8 @@ namespace custom_weather
         [JsonProperty("temperature_2m")]
         public string Temperature;
 
-        [JsonProperty("surface_pressure")]
-        public string Pressure;
+        [JsonProperty("is_day")]
+        public int IsDay;
 
         [JsonProperty("wind_speed_10m")]
         public string WindSpeed;
@@ -57,26 +57,44 @@ namespace custom_weather
         [JsonProperty("wind_direction_10m")]
         public string WindDirection;
 
+        [JsonProperty("apparent_temperature")]
+        public string FeelsLike;
+
         [JsonProperty("relative_humidity_2m")]
         public string Humidity;
 
-        [JsonProperty("is_day")]
-        public int IsDay;
+        [JsonProperty("dew_point_2m")]
+        public string DewPoint;
+
+        [JsonProperty("surface_pressure")]
+        public string Pressure;
+
+        [JsonProperty("cloud_cover")]
+        public string CloudCover;
+
+        [JsonProperty("precipitation")]
+        public string TotalPrecip;
 
         [JsonProperty("precipitation_probability")]
-        public string RainChance;
+        public string PrecipChance;
 
-        [JsonProperty("apparent_temperature")]
-        public string FeelsLike;
+        [JsonProperty("snowfall")]
+        public string Snowfall;
+
+        [JsonProperty("snow_depth")]
+        public string SnowDepth;
+
+        [JsonProperty("visibility")]
+        public string Visibility;
     }
 
     public struct DailyData
     {
-        [JsonProperty("temperature_2m_min")]
-        public string[] MinTemps;
-
         [JsonProperty("temperature_2m_max")]
         public string[] MaxTemps;
+
+        [JsonProperty("temperature_2m_min")]
+        public string[] MinTemps;
     }
 
     public struct WeatherResult

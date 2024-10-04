@@ -50,8 +50,8 @@ namespace custom_weather
                 { "temperature_unit", settings.TempUnit.ToString() },
                 { "wind_speed_unit", settings.WindUnit.ToString() },
                 { "precipitation_unit", settings.RainUnit.ToString() },
-                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day,precipitation_probability,apparent_temperature" },
-                { "daily", "temperature_2m_min,temperature_2m_max" }
+                { "current", "weather_code,temperature_2m,is_day," + settings.WeatherData.GetCurrent() },
+                { "daily", settings.WeatherData.GetDaily() }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
 
@@ -85,22 +85,64 @@ namespace custom_weather
 
                     string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
                     List<string> subTitleData = new List<string> {
-                    "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
-                    "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
-                    "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
-                    "Direction: " + windDirection + settings.DirectionUnit.GetDescription(),
-                    "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
-                    "Rain Chance: " + omData.Current.RainChance + " %",
-                    "Humidity: " + omData.Current.Humidity + " %",
-                };
+                        "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
+                        "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
+                        "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
+                        "Direction: " + windDirection + settings.DirectionUnit.GetDescription(),
+                        "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
+                        "Rain Chance: " + omData.Current.PrecipChance + " %",
+                        "Humidity: " + omData.Current.Humidity + " %",
+                    };
 
                     result.SubTitle = string.Join("     ", subTitleData);
+
+                    result.SubTitle = BuildSubtitle(settings, omData);
                     WeatherCache.Cache(requestKey, result);
                     return result;
                 }
                 throw new Exception("Can't fetch weather data");
             }
             return WeatherCache.Retrieve(requestKey);
+        }
+
+        private static string BuildSubtitle(SettingsSave settings, OpenMeteoData omData)
+        {
+            List<string> data = new List<string>();
+
+            if(omData.Daily.MaxTemps != null)
+                data.Add("Max: " + omData.Daily.MaxTemps[0] + " " + settings.TempUnit.GetDescription());
+            if(omData.Daily.MinTemps != null)
+                data.Add("Min: " + omData.Daily.MinTemps[0] + " " + settings.TempUnit.GetDescription());
+            if(omData.Current.WindSpeed != null)
+                data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription());
+            if(omData.Current.WindDirection != null)
+            {
+                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
+                data.Add("Wind Direction: " + windDirection + settings.DirectionUnit.GetDescription());
+            }
+            if(omData.Current.FeelsLike != null)
+                data.Add("Feels Like: " + omData.Current.FeelsLike + " " + settings.TempUnit.GetDescription());
+            if(omData.Current.Humidity != null)
+                data.Add("Humidity: " + omData.Current.Humidity + " %");
+            if(omData.Current.DewPoint != null)
+                data.Add("Dew Point: " + omData.Current.DewPoint + " " + settings.TempUnit.GetDescription());
+            if(omData.Current.Pressure != null)
+                data.Add("Pressure: " + omData.Current.Pressure + " hPa"); //TODO: change
+            if(omData.Current.CloudCover != null)
+                data.Add("Cloud Cover: " + omData.Current.CloudCover + " %");
+            if(omData.Current.TotalPrecip != null)
+                data.Add("Total Rain: " + omData.Current.TotalPrecip + " " + settings.RainUnit.GetDescription());
+            if(omData.Current.PrecipChance != null)
+                data.Add("Rain Chance: " + omData.Current.PrecipChance + " %");
+            if(omData.Current.Snowfall != null)
+                data.Add("Snowfall: " + omData.Current.Snowfall + " " + (settings.RainUnit.GetDescription() == "mm" ? "cm" : "inch")); //TODO: change
+            if(omData.Current.SnowDepth != null)
+                data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + (settings.RainUnit.GetDescription() == "mm" ? "m" : "ft")); ////TODO: change
+            if(omData.Current.Visibility != null)
+                data.Add("Visibility: " + omData.Current.Visibility + " " + (settings.RainUnit.GetDescription() == "mm" ? "m" : "ft")); //TODO: change
+
+
+            return string.Join("     ", data);
         }
 
         private static string ToCompass(string direction)

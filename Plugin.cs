@@ -23,13 +23,23 @@ namespace custom_weather
             string configPath = _context.CurrentPluginMetadata.PluginDirectory + "\\config.json";
             if(File.Exists(configPath))
             {
-                _settings = JsonConvert.DeserializeObject<SettingsSave>(File.ReadAllText(configPath));
-                if(_settings == null)
+                try
+                {
+                    _settings = JsonConvert.DeserializeObject<SettingsSave>(File.ReadAllText(configPath));
+                    if(_settings == null)
+                    {
+                        _settings = new SettingsSave();
+                    }
+                    _settings.ConfigPath = configPath;
+                    _settings.Validate();
+                }
+                catch(Exception)
                 {
                     _settings = new SettingsSave();
+                    _settings.ConfigPath = configPath;
+                    _settings.Validate();
                 }
-                _settings.ConfigPath = configPath;
-                _settings.Validate();
+
             }
             else
             {
