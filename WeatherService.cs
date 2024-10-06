@@ -55,7 +55,7 @@ namespace custom_weather
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
 
-            string requestKey = body.ReadAsStringAsync().Result;
+            string requestKey = body.ReadAsStringAsync().Result + settings.DirectionUnit;
             if(!WeatherCache.HasCached(requestKey, Int32.Parse(settings.CacheDuration.GetDescription())))
             {
                 var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
@@ -83,20 +83,8 @@ namespace custom_weather
                     }
                     result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
-                    string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
-                    List<string> subTitleData = new List<string> {
-                        "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
-                        "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
-                        "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
-                        "Direction: " + windDirection + settings.DirectionUnit.GetDescription(),
-                        "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
-                        "Rain Chance: " + omData.Current.PrecipChance + " %",
-                        "Humidity: " + omData.Current.Humidity + " %",
-                    };
-
-                    result.SubTitle = string.Join("     ", subTitleData);
-
                     result.SubTitle = BuildSubtitle(settings, omData);
+
                     WeatherCache.Cache(requestKey, result);
                     return result;
                 }
@@ -110,36 +98,36 @@ namespace custom_weather
             List<string> data = new List<string>();
 
             if(omData.Daily.MaxTemps != null)
-                data.Add("Max: " + omData.Daily.MaxTemps[0] + " " + settings.TempUnit.GetDescription());
+                data.Add("Max: " + omData.Daily.MaxTemps[0] + " " + omData.DailyUnits.MaxTemp);
             if(omData.Daily.MinTemps != null)
-                data.Add("Min: " + omData.Daily.MinTemps[0] + " " + settings.TempUnit.GetDescription());
+                data.Add("Min: " + omData.Daily.MinTemps[0] + " " + omData.DailyUnits.MinTemp);
             if(omData.Current.WindSpeed != null)
-                data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription());
+                data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + omData.CurrentUnits.WindSpeed);
             if(omData.Current.WindDirection != null)
             {
-                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection : ToCompass(omData.Current.WindDirection);
-                data.Add("Wind Direction: " + windDirection + settings.DirectionUnit.GetDescription());
+                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection + omData.CurrentUnits.WindDirection : ToCompass(omData.Current.WindDirection);
+                data.Add("Wind Direction: " + windDirection);
             }
             if(omData.Current.FeelsLike != null)
-                data.Add("Feels Like: " + omData.Current.FeelsLike + " " + settings.TempUnit.GetDescription());
+                data.Add("Feels Like: " + omData.Current.FeelsLike + " " + omData.CurrentUnits.FeelsLike);
             if(omData.Current.Humidity != null)
-                data.Add("Humidity: " + omData.Current.Humidity + " %");
+                data.Add("Humidity: " + omData.Current.Humidity + " " + omData.CurrentUnits.Humidity);
             if(omData.Current.DewPoint != null)
-                data.Add("Dew Point: " + omData.Current.DewPoint + " " + settings.TempUnit.GetDescription());
+                data.Add("Dew Point: " + omData.Current.DewPoint + " " + omData.CurrentUnits.DewPoint);
             if(omData.Current.Pressure != null)
-                data.Add("Pressure: " + omData.Current.Pressure + " hPa"); //TODO: change
+                data.Add("Pressure: " + omData.Current.Pressure + " " + omData.CurrentUnits.Pressure);
             if(omData.Current.CloudCover != null)
-                data.Add("Cloud Cover: " + omData.Current.CloudCover + " %");
+                data.Add("Cloud Cover: " + omData.Current.CloudCover + " " + omData.CurrentUnits.CloudCover);
             if(omData.Current.TotalPrecip != null)
-                data.Add("Total Rain: " + omData.Current.TotalPrecip + " " + settings.RainUnit.GetDescription());
+                data.Add("Total Rain: " + omData.Current.TotalPrecip + " " + omData.CurrentUnits.TotalPrecip);
             if(omData.Current.PrecipChance != null)
-                data.Add("Rain Chance: " + omData.Current.PrecipChance + " %");
+                data.Add("Rain Chance: " + omData.Current.PrecipChance + " " + omData.CurrentUnits.PrecipChance);
             if(omData.Current.Snowfall != null)
-                data.Add("Snowfall: " + omData.Current.Snowfall + " " + (settings.RainUnit.GetDescription() == "mm" ? "cm" : "inch")); //TODO: change
+                data.Add("Snowfall: " + omData.Current.Snowfall + " " + omData.CurrentUnits.Snowfall);
             if(omData.Current.SnowDepth != null)
-                data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + (settings.RainUnit.GetDescription() == "mm" ? "m" : "ft")); ////TODO: change
+                data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + omData.CurrentUnits.SnowDepth);
             if(omData.Current.Visibility != null)
-                data.Add("Visibility: " + omData.Current.Visibility + " " + (settings.RainUnit.GetDescription() == "mm" ? "m" : "ft")); //TODO: change
+                data.Add("Visibility: " + omData.Current.Visibility + " " + omData.CurrentUnits.Visibility);
 
 
             return string.Join("     ", data);

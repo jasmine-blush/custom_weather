@@ -40,7 +40,7 @@
                     <ComboBoxItem>°F</ComboBoxItem>
                 </ComboBox>
                 <TextBlock x:Name="TempUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
-                <TextBlock VerticalAlignment="Center" Text="Wind:" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Speed:" Margin="0,0,5,0"/>
                 <ComboBox x:Name="WindUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="WindUnit_SelectionChanged">
                     <ComboBoxItem>km/h</ComboBoxItem>
                     <ComboBoxItem>m/s</ComboBoxItem>
@@ -54,7 +54,7 @@
                     <ComboBoxItem>Imperial</ComboBoxItem>
                 </ComboBox>
                 <TextBlock x:Name="RainUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
-                <TextBlock VerticalAlignment="Center" Text="Direction:" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Wind:" Margin="0,0,5,0"/>
                 <ComboBox x:Name="DirectionUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="DirectionUnit_SelectionChanged">
                     <ComboBoxItem>Degrees</ComboBoxItem>
                     <ComboBoxItem>Compass</ComboBoxItem>
