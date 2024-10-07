@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:custom_weather"
              mc:Ignorable="d"
              Loaded="UserControl_Loaded"
-             d:DesignHeight="300" d:DesignWidth="465">
+             d:DesignHeight="300" d:DesignWidth="600">
     <DockPanel Margin="20,20,20,20">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
@@ -15,15 +15,24 @@
                 <RowDefinition MinHeight="200" Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
+            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Content="General" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" TextAlignment="Right" Text="Home Town:" Margin="0,0,5,0"/>
                 <TextBox x:Name="HometownTextbox" Text="" Height="20" MinWidth="100" Width="Auto" MaxWidth="300" Padding="0,0,5,0" TextChanged="HometownTextbox_TextChanged"/>
-                <TextBlock x:Name="HometownInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                <TextBlock x:Name="HometownInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Cache Duration:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="CacheDurationComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="CacheDuration_SelectionChanged">
+                    <ComboBoxItem>5 mins</ComboBoxItem>
+                    <ComboBoxItem>15 mins</ComboBoxItem>
+                    <ComboBoxItem>1 hour</ComboBoxItem>
+                    <ComboBoxItem>1 day</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="CacheDurationInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
             </StackPanel>
-            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" TextAlignment="Center" Text="Units" Margin="0,0,5,0"/>
+            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" Content="Units" Margin="0,0,5,0"/>
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Temp:" Margin="0,0,5,0"/>
                 <ComboBox x:Name="TempUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="TempUnit_SelectionChanged">
@@ -31,7 +40,7 @@
                     <ComboBoxItem>°F</ComboBoxItem>
                 </ComboBox>
                 <TextBlock x:Name="TempUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
-                <TextBlock VerticalAlignment="Center" Text="Wind:" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Speed:" Margin="0,0,5,0"/>
                 <ComboBox x:Name="WindUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="WindUnit_SelectionChanged">
                     <ComboBoxItem>km/h</ComboBoxItem>
                     <ComboBoxItem>m/s</ComboBoxItem>
@@ -39,13 +48,67 @@
                     <ComboBoxItem>kn</ComboBoxItem>
                 </ComboBox>
                 <TextBlock x:Name="WindUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
-                <TextBlock VerticalAlignment="Center" Text="Rain:" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Length:" Margin="0,0,5,0"/>
                 <ComboBox x:Name="RainUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="RainUnit_SelectionChanged">
-                    <ComboBoxItem>mm</ComboBoxItem>
-                    <ComboBoxItem>inch</ComboBoxItem>
+                    <ComboBoxItem>Metric</ComboBoxItem>
+                    <ComboBoxItem>Imperial</ComboBoxItem>
                 </ComboBox>
                 <TextBlock x:Name="RainUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
+                <TextBlock VerticalAlignment="Center" Text="Wind:" Margin="0,0,5,0"/>
+                <ComboBox x:Name="DirectionUnitComboBox" VerticalAlignment="Center" Height="Auto" Width="Auto" SelectedIndex="0" SelectionChanged="DirectionUnit_SelectionChanged">
+                    <ComboBoxItem>Degrees</ComboBoxItem>
+                    <ComboBoxItem>Compass</ComboBoxItem>
+                </ComboBox>
+                <TextBlock x:Name="DirectionUnitInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue" Margin="0,0,5,0"/>
             </StackPanel>
+            <GroupBox Grid.Row="2" Grid.ColumnSpan="2" Padding="5,5,5,5">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="Weather Data" Margin="0,0,5,0"/>
+                        <TextBlock x:Name="WeatherDataInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                    </StackPanel>
+                </GroupBox.Header>
+                <GroupItem>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,20,0">
+                            <Label FontWeight="Bold">Basic:</Label>
+                            <CheckBox x:Name="MaxTempCheckBox" Checked="MaxTempCheckBox_Checked" Unchecked="MaxTempCheckBox_Checked">Max Temp</CheckBox>
+                            <CheckBox x:Name="MinTempCheckBox" Checked="MinTempCheckBox_Checked" Unchecked="MinTempCheckBox_Checked">Min Temp</CheckBox>
+                            <CheckBox x:Name="WindSpeedCheckBox" Checked="WindSpeedCheckBox_Checked" Unchecked="WindSpeedCheckBox_Checked">Wind Speed</CheckBox>
+                            <CheckBox x:Name="WindDirectionCheckBox" Checked="WindDirectionCheckBox_Checked" Unchecked="WindDirectionCheckBox_Checked">Wind Direction</CheckBox>
+                            <CheckBox x:Name="FeelsLikeCheckBox" Checked="FeelsLikeCheckBox_Checked" Unchecked="FeelsLikeCheckBox_Checked">Feels Like</CheckBox>
+                            <CheckBox x:Name="HumidityCheckBox" Checked="HumidityCheckBox_Checked" Unchecked="HumidityCheckBox_Checked">Humidity</CheckBox>
+                            <CheckBox x:Name="DewPointCheckBox" Checked="DewPointCheckBox_Checked" Unchecked="DewPointCheckBox_Checked">Dew Point</CheckBox>
+                            <CheckBox x:Name="PressureCheckBox" Checked="PressureCheckBox_Checked" Unchecked="PressureCheckBox_Checked">Pressure</CheckBox>
+                            <CheckBox x:Name="CloudCoverCheckBox" Checked="CloudCoverCheckBox_Checked" Unchecked="CloudCoverCheckBox_Checked">Cloud Cover</CheckBox>
+                            <CheckBox x:Name="TotalPrecipCheckBox" Checked="TotalPrecipCheckBox_Checked" Unchecked="TotalPrecipCheckBox_Checked">Total Precipitation</CheckBox>
+                            <CheckBox x:Name="PrecipChanceCheckBox" Checked="PrecipChanceCheckBox_Checked" Unchecked="PrecipChanceCheckBox_Checked">Precipitation Chance</CheckBox>
+                            <CheckBox x:Name="SnowfallCheckBox" Checked="SnowfallCheckBox_Checked" Unchecked="SnowfallCheckBox_Checked">Snowfall</CheckBox>
+                            <CheckBox x:Name="SnowDepthCheckBox" Checked="SnowDepthCheckBox_Checked" Unchecked="SnowDepthCheckBox_Checked">Snow Depth</CheckBox>
+                            <CheckBox x:Name="VisibilityCheckBox" Checked="VisibilityCheckBox_Checked" Unchecked="VisibilityCheckBox_Checked">Visibility</CheckBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Vertical">
+                            <Label FontWeight="Bold">Advanced:</Label>
+                            <CheckBox x:Name="ShortRadiationCheckBox" Checked="ShortRadiationCheckBox_Checked"  Unchecked="ShortRadiationCheckBox_Checked">Shortwave Radiation</CheckBox>
+                            <CheckBox x:Name="DirectRadiationCheckBox" Checked="DirectRadiationCheckBox_Checked"  Unchecked="DirectRadiationCheckBox_Checked">Direction Radiation</CheckBox>
+                            <CheckBox x:Name="DiffuseRadiationCheckBox" Checked="DiffuseRadiationCheckBox_Checked"  Unchecked="DiffuseRadiationCheckBox_Checked">Diffuse Radiation</CheckBox>
+                            <CheckBox x:Name="VPDeficitCheckBox" Checked="VPDeficitCheckBox_Checked"  Unchecked="VPDeficitCheckBox_Checked">Vapour Pressure Deficit</CheckBox>
+                            <CheckBox x:Name="CAPECheckBox" Checked="CAPECheckBox_Checked"  Unchecked="CAPECheckBox_Checked">CAPE (Convective available potential energy)</CheckBox>
+                            <CheckBox x:Name="EvapoCheckBox" Checked="EvapoCheckBox_Checked"  Unchecked="EvapoCheckBox_Checked">ET₀ Reference Evapotranspiration</CheckBox>
+                            <CheckBox x:Name="FreezingHeightCheckBox" Checked="FreezingHeightCheckBox_Checked"  Unchecked="FreezingHeightCheckBox_Checked">Freezing Level Height</CheckBox>
+                            <CheckBox x:Name="SoilTemperatureCheckBox" Checked="SoilTemperatureCheckBox_Checked"  Unchecked="SoilTemperatureCheckBox_Checked">Soil Temperature</CheckBox>
+                            <CheckBox x:Name="SoilMoistureCheckBox" Checked="SoilMoistureCheckBox_Checked"  Unchecked="SoilMoistureCheckBox_Checked">Soil Moisture</CheckBox>
+                        </StackPanel>
+                    </Grid>
+                </GroupItem>
+            </GroupBox>
         </Grid>
         <Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <TextBlock FontSize="10" TextWrapping="Wrap">

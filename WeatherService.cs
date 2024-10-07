@@ -50,95 +50,195 @@ namespace custom_weather
                 { "temperature_unit", settings.TempUnit.ToString() },
                 { "wind_speed_unit", settings.WindUnit.ToString() },
                 { "precipitation_unit", settings.RainUnit.ToString() },
-                { "current", "weather_code,temperature_2m,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,is_day,precipitation_probability,apparent_temperature" },
-                { "daily", "temperature_2m_min,temperature_2m_max" }
+                { "current", "weather_code,temperature_2m,is_day," + settings.WeatherData.GetCurrent() },
+                { "daily", settings.WeatherData.GetDaily() }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
-            var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
 
-            if(response.IsSuccessStatusCode)
+            string requestKey = body.ReadAsStringAsync().Result + settings.DirectionUnit;
+            if(!WeatherCache.HasCached(requestKey, Int32.Parse(settings.CacheDuration.GetDescription())))
             {
-                string responseString = await response.Content.ReadAsStringAsync();
-                OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
+                var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
 
-                WeatherResult result = new WeatherResult();
-                if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
+                if(response.IsSuccessStatusCode)
                 {
-                    result.Title = weatherType[0];
-                    result.IcoPath = weatherType[1];
-                    if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
+
+                    WeatherResult result = new WeatherResult();
+                    if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
                     {
-                        result.IcoPath += "_night";
+                        result.Title = weatherType[0];
+                        result.IcoPath = weatherType[1];
+                        if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
+                        {
+                            result.IcoPath += "_night";
+                        }
+                        result.IcoPath += ".png";
                     }
-                    result.IcoPath += ".png";
-                }
-                else
-                {
-                    result.Title = "Unknown Weather";
-                    result.IcoPath = "Images\\plugin.png";
-                }
-                result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
+                    else
+                    {
+                        result.Title = "Unknown Weather";
+                        result.IcoPath = "Images\\plugin.png";
+                    }
+                    result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
-                List<string> subTitleData = new List<string> {
-                    "Max: " + omData.Daily.MaxTemps[0] + " " +  settings.TempUnit.GetDescription(),
-                    "Min: " + omData.Daily.MinTemps[0] + " " +  settings.TempUnit.GetDescription(),
-                    "Wind Speed: " + omData.Current.WindSpeed + " " + settings.WindUnit.GetDescription(),
-                    "Direction: " + omData.Current.WindDirection + "°",
-                    "Feels Like: " + omData.Current.FeelsLike + " " +  settings.TempUnit.GetDescription(),
-                    "Rain Chance: " + omData.Current.RainChance + " %",
-                    "Humidity: " + omData.Current.Humidity + " %",
-                };
+                    result.SubTitle = BuildSubtitle(settings, omData);
 
-                result.SubTitle = string.Join("     ", subTitleData);
-                return result;
+                    WeatherCache.Cache(requestKey, result);
+                    return result;
+                }
+                throw new Exception("Can't fetch weather data");
             }
-            throw new Exception("Can't fetch weather data");
+            return WeatherCache.Retrieve(requestKey);
+        }
+
+        private static string BuildSubtitle(SettingsSave settings, OpenMeteoData omData)
+        {
+            List<string> data = new List<string>();
+
+            if(omData.Daily.MaxTemps != null)
+                data.Add("Max: " + omData.Daily.MaxTemps[0] + " " + omData.DailyUnits.MaxTemp);
+            if(omData.Daily.MinTemps != null)
+                data.Add("Min: " + omData.Daily.MinTemps[0] + " " + omData.DailyUnits.MinTemp);
+
+            if(omData.Current.WindSpeed != null)
+                data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + omData.CurrentUnits.WindSpeed);
+            if(omData.Current.WindDirection != null)
+            {
+                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection + omData.CurrentUnits.WindDirection : ToCompass(omData.Current.WindDirection);
+                data.Add("Wind Direction: " + windDirection);
+            }
+            if(omData.Current.FeelsLike != null)
+                data.Add("Feels Like: " + omData.Current.FeelsLike + " " + omData.CurrentUnits.FeelsLike);
+            if(omData.Current.Humidity != null)
+                data.Add("Humidity: " + omData.Current.Humidity + " " + omData.CurrentUnits.Humidity);
+            if(omData.Current.DewPoint != null)
+                data.Add("Dew Point: " + omData.Current.DewPoint + " " + omData.CurrentUnits.DewPoint);
+            if(omData.Current.Pressure != null)
+                data.Add("Pressure: " + omData.Current.Pressure + " " + omData.CurrentUnits.Pressure);
+            if(omData.Current.CloudCover != null)
+                data.Add("Cloud Cover: " + omData.Current.CloudCover + " " + omData.CurrentUnits.CloudCover);
+            if(omData.Current.TotalPrecip != null)
+                data.Add("Total Rain: " + omData.Current.TotalPrecip + " " + omData.CurrentUnits.TotalPrecip);
+            if(omData.Current.PrecipChance != null)
+                data.Add("Rain Chance: " + omData.Current.PrecipChance + " " + omData.CurrentUnits.PrecipChance);
+            if(omData.Current.Snowfall != null)
+                data.Add("Snowfall: " + omData.Current.Snowfall + " " + omData.CurrentUnits.Snowfall);
+            if(omData.Current.SnowDepth != null)
+                data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + omData.CurrentUnits.SnowDepth);
+            if(omData.Current.Visibility != null)
+                data.Add("Visibility: " + omData.Current.Visibility + " " + omData.CurrentUnits.Visibility);
+
+            if(omData.Current.ShortRadiation != null)
+                data.Add("Shortwave: " + omData.Current.ShortRadiation + " " + omData.CurrentUnits.ShortRadiation);
+            if(omData.Current.DirectRadiation != null)
+                data.Add("Direct: " + omData.Current.DirectRadiation + " " + omData.CurrentUnits.DirectRadiation);
+            if(omData.Current.DiffuseRadiation != null)
+                data.Add("Diffuse: " + omData.Current.DiffuseRadiation + " " + omData.CurrentUnits.DiffuseRadiation);
+            if(omData.Current.VPDeficit != null)
+                data.Add("Deficit: " + omData.Current.VPDeficit + " " + omData.CurrentUnits.VPDeficit);
+            if(omData.Current.CAPE != null)
+                data.Add("CAPE: " + omData.Current.CAPE + " " + omData.CurrentUnits.CAPE);
+            if(omData.Current.Evapo != null)
+                data.Add("ET0: " + omData.Current.Evapo + " " + omData.CurrentUnits.Evapo);
+            if(omData.Current.FreezingHeight != null)
+                data.Add("Freezing: " + omData.Current.FreezingHeight + " " + omData.CurrentUnits.FreezingHeight);
+            if(omData.Current.SoilTemperature != null)
+                data.Add("Soil: " + omData.Current.SoilTemperature + " " + omData.CurrentUnits.SoilTemperature);
+            if(omData.Current.SoilMoisture != null)
+                data.Add("Moisture: " + omData.Current.SoilMoisture + " " + omData.CurrentUnits.SoilMoisture);
+
+
+            return string.Join("     ", data);
+        }
+
+        private static string ToCompass(string direction)
+        {
+            Int32.TryParse(direction, out int degrees);
+            if(degrees >= 22 && degrees <= 68)
+            {
+                return "NE";
+            }
+            else if(degrees > 68 && degrees < 112)
+            {
+                return "E";
+            }
+            else if(degrees >= 112 && degrees <= 158)
+            {
+                return "SE";
+            }
+            else if(degrees > 158 && degrees < 202)
+            {
+                return "S";
+            }
+            else if(degrees >= 202 && degrees <= 248)
+            {
+                return "SW";
+            }
+            else if(degrees > 248 && degrees < 292)
+            {
+                return "W";
+            }
+            else if(degrees >= 292 && degrees <= 338)
+            {
+                return "NW";
+            }
+            else
+            {
+                return "N";
+            }
         }
 
         public static async Task<List<Coordinates>> GetCoordinates(string location)
         {
-            string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
-            var response = await _client.GetAsync(requestUrl);
-
-            if(response.IsSuccessStatusCode)
+            if(!GeocodeCache.HasCached(location))
             {
-                var responseString = await response.Content.ReadAsStringAsync();
-                var jsonDocument = JsonDocument.Parse(responseString);
-                if(jsonDocument.RootElement.TryGetProperty("results", out JsonElement results))
-                {
-                    List<Coordinates> coordinates = new List<Coordinates>();
-                    foreach(JsonElement result in results.EnumerateArray())
-                    {
-                        coordinates.Add(JsonConvert.DeserializeObject<Coordinates>(result.ToString()));
-                    }
-                    return coordinates;
-                }
-                else
-                {
-                    string[] cityAndCountry = location.Split(',');
-                    if(cityAndCountry.Length == 2)
-                    {
-                        List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
+                string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
+                var response = await _client.GetAsync(requestUrl);
 
+                if(response.IsSuccessStatusCode)
+                {
+                    var responseString = await response.Content.ReadAsStringAsync();
+                    var jsonDocument = JsonDocument.Parse(responseString);
+                    if(jsonDocument.RootElement.TryGetProperty("results", out JsonElement results))
+                    {
                         List<Coordinates> coordinates = new List<Coordinates>();
-                        foreach(Coordinates city in cityCoords)
+                        foreach(JsonElement result in results.EnumerateArray())
                         {
-                            string searchCountry = cityAndCountry[1].ToLower().Trim();
-                            if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
+                            coordinates.Add(JsonConvert.DeserializeObject<Coordinates>(result.ToString()));
+                        }
+                        GeocodeCache.Cache(location, coordinates);
+                        return coordinates;
+                    }
+                    else
+                    {
+                        string[] cityAndCountry = location.Split(',');
+                        if(cityAndCountry.Length == 2)
+                        {
+                            List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
+
+                            List<Coordinates> coordinates = new List<Coordinates>();
+                            foreach(Coordinates city in cityCoords)
                             {
-                                coordinates.Add(city);
+                                string searchCountry = cityAndCountry[1].ToLower().Trim();
+                                if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
+                                {
+                                    coordinates.Add(city);
+                                }
+                            }
+                            if(coordinates.Count > 0)
+                            {
+                                GeocodeCache.Cache(location, coordinates);
+                                return coordinates;
                             }
                         }
-                        if(coordinates.Count > 0)
-                        {
-                            return coordinates;
-                        }
                     }
+                    throw new Exception("Can't find this city");
                 }
-                throw new Exception("Can't find this city");
-
+                throw new Exception("Request Error: " + response.StatusCode.ToString());
             }
-            throw new Exception("Request Error: " + response.StatusCode.ToString());
+            return GeocodeCache.Retrieve(location);
         }
     }
 }

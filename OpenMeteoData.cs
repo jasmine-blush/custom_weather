@@ -36,8 +36,14 @@ namespace custom_weather
         [JsonProperty("current")]
         public CurrentData Current;
 
+        [JsonProperty("current_units")]
+        public CurrentUnits CurrentUnits;
+
         [JsonProperty("daily")]
         public DailyData Daily;
+
+        [JsonProperty("daily_units")]
+        public DailyUnits DailyUnits;
     }
 
     public struct CurrentData
@@ -48,8 +54,8 @@ namespace custom_weather
         [JsonProperty("temperature_2m")]
         public string Temperature;
 
-        [JsonProperty("surface_pressure")]
-        public string Pressure;
+        [JsonProperty("is_day")]
+        public int IsDay;
 
         [JsonProperty("wind_speed_10m")]
         public string WindSpeed;
@@ -57,30 +63,156 @@ namespace custom_weather
         [JsonProperty("wind_direction_10m")]
         public string WindDirection;
 
+        [JsonProperty("apparent_temperature")]
+        public string FeelsLike;
+
         [JsonProperty("relative_humidity_2m")]
         public string Humidity;
 
-        [JsonProperty("is_day")]
-        public int IsDay;
+        [JsonProperty("dew_point_2m")]
+        public string DewPoint;
+
+        [JsonProperty("surface_pressure")]
+        public string Pressure;
+
+        [JsonProperty("cloud_cover")]
+        public string CloudCover;
+
+        [JsonProperty("precipitation")]
+        public string TotalPrecip;
 
         [JsonProperty("precipitation_probability")]
-        public string RainChance;
+        public string PrecipChance;
+
+        [JsonProperty("snowfall")]
+        public string Snowfall;
+
+        [JsonProperty("snow_depth")]
+        public string SnowDepth;
+
+        [JsonProperty("visibility")]
+        public string Visibility;
+
+
+        [JsonProperty("shortwave_radiation")]
+        public string ShortRadiation;
+
+        [JsonProperty("direct_radiation")]
+        public string DirectRadiation;
+
+        [JsonProperty("diffuse_radiation")]
+        public string DiffuseRadiation;
+
+        [JsonProperty("vapour_pressure_deficit")]
+        public string VPDeficit;
+
+        [JsonProperty("cape")]
+        public string CAPE;
+
+        [JsonProperty("et0_fao_evapotranspiration")]
+        public string Evapo;
+
+        [JsonProperty("freezing_level_height")]
+        public string FreezingHeight;
+
+        [JsonProperty("soil_temperature_0cm")]
+        public string SoilTemperature;
+
+        [JsonProperty("soil_moisture_0_to_1cm")]
+        public string SoilMoisture;
+    }
+
+    public struct CurrentUnits
+    {
+        [JsonProperty("temperature_2m")]
+        public string Temperature;
+
+        [JsonProperty("wind_speed_10m")]
+        public string WindSpeed;
+
+        [JsonProperty("wind_direction_10m")]
+        public string WindDirection;
 
         [JsonProperty("apparent_temperature")]
         public string FeelsLike;
+
+        [JsonProperty("relative_humidity_2m")]
+        public string Humidity;
+
+        [JsonProperty("dew_point_2m")]
+        public string DewPoint;
+
+        [JsonProperty("surface_pressure")]
+        public string Pressure;
+
+        [JsonProperty("cloud_cover")]
+        public string CloudCover;
+
+        [JsonProperty("precipitation")]
+        public string TotalPrecip;
+
+        [JsonProperty("precipitation_probability")]
+        public string PrecipChance;
+
+        [JsonProperty("snowfall")]
+        public string Snowfall;
+
+        [JsonProperty("snow_depth")]
+        public string SnowDepth;
+
+        [JsonProperty("visibility")]
+        public string Visibility;
+
+
+        [JsonProperty("shortwave_radiation")]
+        public string ShortRadiation;
+
+        [JsonProperty("direct_radiation")]
+        public string DirectRadiation;
+
+        [JsonProperty("diffuse_radiation")]
+        public string DiffuseRadiation;
+
+        [JsonProperty("vapour_pressure_deficit")]
+        public string VPDeficit;
+
+        [JsonProperty("cape")]
+        public string CAPE;
+
+        [JsonProperty("et0_fao_evapotranspiration")]
+        public string Evapo;
+
+        [JsonProperty("freezing_level_height")]
+        public string FreezingHeight;
+
+        [JsonProperty("soil_temperature_0cm")]
+        public string SoilTemperature;
+
+        [JsonProperty("soil_moisture_0_to_1cm")]
+        public string SoilMoisture;
     }
 
     public struct DailyData
     {
-        [JsonProperty("temperature_2m_min")]
-        public string[] MinTemps;
-
         [JsonProperty("temperature_2m_max")]
         public string[] MaxTemps;
+
+        [JsonProperty("temperature_2m_min")]
+        public string[] MinTemps;
+    }
+
+    public struct DailyUnits
+    {
+        [JsonProperty("temperature_2m_max")]
+        public string MaxTemp;
+
+        [JsonProperty("temperature_2m_min")]
+        public string MinTemp;
     }
 
     public struct WeatherResult
     {
+        public long CacheTime;
         public string Title;
         public string SubTitle;
         public string IcoPath;
