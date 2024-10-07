@@ -92,6 +92,34 @@ namespace custom_weather
 
         [JsonProperty("visibility")]
         public string Visibility;
+
+
+        [JsonProperty("shortwave_radiation")]
+        public string ShortRadiation;
+
+        [JsonProperty("direct_radiation")]
+        public string DirectRadiation;
+
+        [JsonProperty("diffuse_radiation")]
+        public string DiffuseRadiation;
+
+        [JsonProperty("vapour_pressure_deficit")]
+        public string VPDeficit;
+
+        [JsonProperty("cape")]
+        public string CAPE;
+
+        [JsonProperty("et0_fao_evapotranspiration")]
+        public string Evapo;
+
+        [JsonProperty("freezing_level_height")]
+        public string FreezingHeight;
+
+        [JsonProperty("soil_temperature_0cm")]
+        public string SoilTemperature;
+
+        [JsonProperty("soil_moisture_0_to_1cm")]
+        public string SoilMoisture;
     }
 
     public struct CurrentUnits
@@ -134,6 +162,34 @@ namespace custom_weather
 
         [JsonProperty("visibility")]
         public string Visibility;
+
+
+        [JsonProperty("shortwave_radiation")]
+        public string ShortRadiation;
+
+        [JsonProperty("direct_radiation")]
+        public string DirectRadiation;
+
+        [JsonProperty("diffuse_radiation")]
+        public string DiffuseRadiation;
+
+        [JsonProperty("vapour_pressure_deficit")]
+        public string VPDeficit;
+
+        [JsonProperty("cape")]
+        public string CAPE;
+
+        [JsonProperty("et0_fao_evapotranspiration")]
+        public string Evapo;
+
+        [JsonProperty("freezing_level_height")]
+        public string FreezingHeight;
+
+        [JsonProperty("soil_temperature_0cm")]
+        public string SoilTemperature;
+
+        [JsonProperty("soil_moisture_0_to_1cm")]
+        public string SoilMoisture;
     }
 
     public struct DailyData

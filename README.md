@@ -6,11 +6,12 @@
 <img width="600" src="Images\\example.png"/>
 
 ## TODO ##
-- [ ] Retrieve and show more weather data
+- [x] Retrieve and show more weather data
 - [x] Cache Geocoding data to reduce requests
-- [ ] Implement home town and add more settings
+- [x] Implement home town and add more settings
 - [x] Allow customization of data display
 - [ ] Add support for non-latin scripts
 - [ ] Show future weather
 - [ ] Detail view(?)
 - [x] Upgrade .NET Framework (now 4.8.1)
+- [ ] Implement Wox Proxy

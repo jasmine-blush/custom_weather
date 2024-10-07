@@ -101,6 +101,7 @@ namespace custom_weather
                 data.Add("Max: " + omData.Daily.MaxTemps[0] + " " + omData.DailyUnits.MaxTemp);
             if(omData.Daily.MinTemps != null)
                 data.Add("Min: " + omData.Daily.MinTemps[0] + " " + omData.DailyUnits.MinTemp);
+
             if(omData.Current.WindSpeed != null)
                 data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + omData.CurrentUnits.WindSpeed);
             if(omData.Current.WindDirection != null)
@@ -128,6 +129,25 @@ namespace custom_weather
                 data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + omData.CurrentUnits.SnowDepth);
             if(omData.Current.Visibility != null)
                 data.Add("Visibility: " + omData.Current.Visibility + " " + omData.CurrentUnits.Visibility);
+
+            if(omData.Current.ShortRadiation != null)
+                data.Add("Shortwave: " + omData.Current.ShortRadiation + " " + omData.CurrentUnits.ShortRadiation);
+            if(omData.Current.DirectRadiation != null)
+                data.Add("Direct: " + omData.Current.DirectRadiation + " " + omData.CurrentUnits.DirectRadiation);
+            if(omData.Current.DiffuseRadiation != null)
+                data.Add("Diffuse: " + omData.Current.DiffuseRadiation + " " + omData.CurrentUnits.DiffuseRadiation);
+            if(omData.Current.VPDeficit != null)
+                data.Add("Deficit: " + omData.Current.VPDeficit + " " + omData.CurrentUnits.VPDeficit);
+            if(omData.Current.CAPE != null)
+                data.Add("CAPE: " + omData.Current.CAPE + " " + omData.CurrentUnits.CAPE);
+            if(omData.Current.Evapo != null)
+                data.Add("ET0: " + omData.Current.Evapo + " " + omData.CurrentUnits.Evapo);
+            if(omData.Current.FreezingHeight != null)
+                data.Add("Freezing: " + omData.Current.FreezingHeight + " " + omData.CurrentUnits.FreezingHeight);
+            if(omData.Current.SoilTemperature != null)
+                data.Add("Soil: " + omData.Current.SoilTemperature + " " + omData.CurrentUnits.SoilTemperature);
+            if(omData.Current.SoilMoisture != null)
+                data.Add("Moisture: " + omData.Current.SoilMoisture + " " + omData.CurrentUnits.SoilMoisture);
 
 
             return string.Join("     ", data);

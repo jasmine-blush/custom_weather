@@ -72,13 +72,12 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="60"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="0" Grid.RowSpan="2" Orientation="Vertical">
+                        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,20,0">
                             <Label FontWeight="Bold">Basic:</Label>
                             <CheckBox x:Name="MaxTempCheckBox" Checked="MaxTempCheckBox_Checked" Unchecked="MaxTempCheckBox_Checked">Max Temp</CheckBox>
                             <CheckBox x:Name="MinTempCheckBox" Checked="MinTempCheckBox_Checked" Unchecked="MinTempCheckBox_Checked">Min Temp</CheckBox>
@@ -94,6 +93,18 @@
                             <CheckBox x:Name="SnowfallCheckBox" Checked="SnowfallCheckBox_Checked" Unchecked="SnowfallCheckBox_Checked">Snowfall</CheckBox>
                             <CheckBox x:Name="SnowDepthCheckBox" Checked="SnowDepthCheckBox_Checked" Unchecked="SnowDepthCheckBox_Checked">Snow Depth</CheckBox>
                             <CheckBox x:Name="VisibilityCheckBox" Checked="VisibilityCheckBox_Checked" Unchecked="VisibilityCheckBox_Checked">Visibility</CheckBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Vertical">
+                            <Label FontWeight="Bold">Advanced:</Label>
+                            <CheckBox x:Name="ShortRadiationCheckBox" Checked="ShortRadiationCheckBox_Checked"  Unchecked="ShortRadiationCheckBox_Checked">Shortwave Radiation</CheckBox>
+                            <CheckBox x:Name="DirectRadiationCheckBox" Checked="DirectRadiationCheckBox_Checked"  Unchecked="DirectRadiationCheckBox_Checked">Direction Radiation</CheckBox>
+                            <CheckBox x:Name="DiffuseRadiationCheckBox" Checked="DiffuseRadiationCheckBox_Checked"  Unchecked="DiffuseRadiationCheckBox_Checked">Diffuse Radiation</CheckBox>
+                            <CheckBox x:Name="VPDeficitCheckBox" Checked="VPDeficitCheckBox_Checked"  Unchecked="VPDeficitCheckBox_Checked">Vapour Pressure Deficit</CheckBox>
+                            <CheckBox x:Name="CAPECheckBox" Checked="CAPECheckBox_Checked"  Unchecked="CAPECheckBox_Checked">CAPE (Convective available potential energy)</CheckBox>
+                            <CheckBox x:Name="EvapoCheckBox" Checked="EvapoCheckBox_Checked"  Unchecked="EvapoCheckBox_Checked">ET₀ Reference Evapotranspiration</CheckBox>
+                            <CheckBox x:Name="FreezingHeightCheckBox" Checked="FreezingHeightCheckBox_Checked"  Unchecked="FreezingHeightCheckBox_Checked">Freezing Level Height</CheckBox>
+                            <CheckBox x:Name="SoilTemperatureCheckBox" Checked="SoilTemperatureCheckBox_Checked"  Unchecked="SoilTemperatureCheckBox_Checked">Soil Temperature</CheckBox>
+                            <CheckBox x:Name="SoilMoistureCheckBox" Checked="SoilMoistureCheckBox_Checked"  Unchecked="SoilMoistureCheckBox_Checked">Soil Moisture</CheckBox>
                         </StackPanel>
                     </Grid>
                 </GroupItem>

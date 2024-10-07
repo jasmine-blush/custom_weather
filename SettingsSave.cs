@@ -172,6 +172,33 @@ namespace custom_weather
         [JsonProperty("visibility")]
         public int Visibility = 0;
 
+        [JsonProperty("shortradiation")]
+        public int ShortRadiation = 0;
+
+        [JsonProperty("directradiation")]
+        public int DirectRadiation = 0;
+
+        [JsonProperty("diffuseradiation")]
+        public int DiffuseRadiation = 0;
+
+        [JsonProperty("vpdeficit")]
+        public int VPDeficit = 0;
+
+        [JsonProperty("cape")]
+        public int CAPE = 0;
+
+        [JsonProperty("evapo")]
+        public int Evapo = 0;
+
+        [JsonProperty("freezingheight")]
+        public int FreezingHeight = 0;
+
+        [JsonProperty("soiltemperature")]
+        public int SoilTemperature = 0;
+
+        [JsonProperty("soilmoisture")]
+        public int SoilMoisture = 0;
+
         public void Validate()
         {
             MaxTemp = IsValid(MaxTemp) ? MaxTemp : 1;
@@ -189,6 +216,16 @@ namespace custom_weather
             Snowfall = IsValid(Snowfall) ? Snowfall : 0;
             SnowDepth = IsValid(SnowDepth) ? SnowDepth : 0;
             Visibility = IsValid(Visibility) ? Visibility : 0;
+
+            ShortRadiation = IsValid(ShortRadiation) ? ShortRadiation : 0;
+            DirectRadiation = IsValid(DirectRadiation) ? DirectRadiation : 0;
+            DiffuseRadiation = IsValid(DiffuseRadiation) ? DiffuseRadiation : 0;
+            VPDeficit = IsValid(VPDeficit) ? VPDeficit : 0;
+            CAPE = IsValid(CAPE) ? CAPE : 0;
+            Evapo = IsValid(Evapo) ? Evapo : 0;
+            FreezingHeight = IsValid(FreezingHeight) ? FreezingHeight : 0;
+            SoilTemperature = IsValid(SoilTemperature) ? SoilTemperature : 0;
+            SoilMoisture = IsValid(SoilMoisture) ? SoilMoisture : 0;
         }
 
         private bool IsValid(int value)
@@ -223,6 +260,25 @@ namespace custom_weather
                 data.Add("snow_depth");
             if(Visibility == 1)
                 data.Add("visibility");
+
+            if(ShortRadiation == 1)
+                data.Add("shortwave_radiation");
+            if(DirectRadiation == 1)
+                data.Add("direct_radiation");
+            if(DiffuseRadiation == 1)
+                data.Add("diffuse_radiation");
+            if(VPDeficit == 1)
+                data.Add("vapour_pressure_deficit");
+            if(CAPE == 1)
+                data.Add("cape");
+            if(Evapo == 1)
+                data.Add("et0_fao_evapotranspiration");
+            if(FreezingHeight == 1)
+                data.Add("freezing_level_height");
+            if(SoilTemperature == 1)
+                data.Add("soil_temperature_0cm");
+            if(SoilMoisture == 1)
+                data.Add("soil_moisture_0_to_1cm");
 
             return string.Join(",", data);
         }

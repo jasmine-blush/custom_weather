@@ -253,6 +253,87 @@ namespace custom_weather
             }
         }
 
+        private void ShortRadiationCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.ShortRadiation = ShortRadiationCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DirectRadiationCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DirectRadiation = DirectRadiationCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DiffuseRadiationCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DiffuseRadiation = DiffuseRadiationCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void VPDeficitCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.VPDeficit = VPDeficitCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void CAPECheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.CAPE = CAPECheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void EvapoCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.Evapo = EvapoCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void FreezingHeightCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.FreezingHeight = FreezingHeightCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void SoilTemperatureCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.SoilTemperature = SoilTemperatureCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void SoilMoistureCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.SoilMoisture = SoilMoistureCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             Process.Start(e.Uri.AbsoluteUri);
