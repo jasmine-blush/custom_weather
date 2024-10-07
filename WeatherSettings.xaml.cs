@@ -71,6 +71,16 @@ namespace custom_weather
             SnowfallCheckBox.IsChecked = _settings.WeatherData.Snowfall == 1 ? true : false;
             SnowDepthCheckBox.IsChecked = _settings.WeatherData.SnowDepth == 1 ? true : false;
             VisibilityCheckBox.IsChecked = _settings.WeatherData.Visibility == 1 ? true : false;
+
+            ShortRadiationCheckBox.IsChecked = _settings.WeatherData.ShortRadiation == 1 ? true : false;
+            DirectRadiationCheckBox.IsChecked = _settings.WeatherData.DirectRadiation == 1 ? true : false;
+            DiffuseRadiationCheckBox.IsChecked = _settings.WeatherData.DiffuseRadiation == 1 ? true : false;
+            VPDeficitCheckBox.IsChecked = _settings.WeatherData.VPDeficit == 1 ? true : false;
+            CAPECheckBox.IsChecked = _settings.WeatherData.CAPE == 1 ? true : false;
+            EvapoCheckBox.IsChecked = _settings.WeatherData.Evapo == 1 ? true : false;
+            FreezingHeightCheckBox.IsChecked = _settings.WeatherData.FreezingHeight == 1 ? true : false;
+            SoilTemperatureCheckBox.IsChecked = _settings.WeatherData.SoilTemperature == 1 ? true : false;
+            SoilMoistureCheckBox.IsChecked = _settings.WeatherData.SoilMoisture == 1 ? true : false;
         }
 
         private void HometownTextbox_TextChanged(object sender, TextChangedEventArgs e)
