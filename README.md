@@ -12,6 +12,6 @@
 - [x] Allow customization of data display
 - [ ] Add support for non-latin scripts
 - [ ] Show future weather
-- [ ] Detail view(?)
+- [ ] Detail view
 - [x] Upgrade .NET Framework (now 4.8.1)
 - [ ] Implement Wox Proxy
