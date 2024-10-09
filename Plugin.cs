@@ -55,7 +55,7 @@ namespace custom_weather
             {
                 if(!string.IsNullOrEmpty(_settings.Hometown))
                 {
-                    List<Result> weatherResults = GetWeather(_settings.Hometown);
+                    List<Result> weatherResults = GetWeather(query.ActionKeyword, _settings.Hometown);
                     foreach(Result weatherResult in weatherResults)
                     {
                         results.Add(weatherResult);
@@ -72,16 +72,23 @@ namespace custom_weather
             }
             else
             {
-                List<Result> weatherResults = GetWeather(search);
-                foreach(Result weatherResult in weatherResults)
+                if(search.EndsWith("!"))
                 {
-                    results.Add(weatherResult);
+                    //Display detail view;
+                }
+                else
+                {
+                    List<Result> weatherResults = GetWeather(query.ActionKeyword, search);
+                    foreach(Result weatherResult in weatherResults)
+                    {
+                        results.Add(weatherResult);
+                    }
                 }
             }
             return results;
         }
 
-        private List<Result> GetWeather(string search)
+        private List<Result> GetWeather(string keyword, string search)
         {
             try
             {
@@ -110,7 +117,8 @@ namespace custom_weather
                     title += " - " + weatherResult.Title;
                     string subTitle = weatherResult.SubTitle;
                     string icoPath = weatherResult.IcoPath;
-                    results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath });
+                    Func<ActionContext, bool> DetailViewAction = ac => { _context.API.ChangeQuery(keyword + " " + search + "!"); return false; };
+                    results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath, Action = DetailViewAction });
                 }
                 return results;
             }
