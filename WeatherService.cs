@@ -42,6 +42,12 @@ namespace custom_weather
 
         private static readonly HttpClient _client = new HttpClient();
 
+        public static async Task<List<WeatherResult>> GetDetailWeather(Coordinates coords, SettingsSave settings)
+        {
+            WeatherResult weatherResult = await GetWeather(coords, settings);
+            return new List<WeatherResult>() { weatherResult };
+        }
+
         public static async Task<WeatherResult> GetWeather(Coordinates coords, SettingsSave settings)
         {
             Dictionary<string, string> values = new Dictionary<string, string>(){

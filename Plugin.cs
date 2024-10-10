@@ -74,7 +74,11 @@ namespace custom_weather
             {
                 if(search.EndsWith("!"))
                 {
-                    //Display detail view;
+                    List<Result> detailResults = GetDetailWeather(search);
+                    foreach(Result detailResult in detailResults)
+                    {
+                        results.Add(detailResult);
+                    }
                 }
                 else
                 {
@@ -86,6 +90,31 @@ namespace custom_weather
                 }
             }
             return results;
+        }
+
+        private List<Result> GetDetailWeather(string search)
+        {
+            try
+            {
+                search = search.Remove(search.Length - 1, 1); // remove ! at end
+                List<Coordinates> coords = WeatherService.GetCoordinates(search).Result;
+
+                if(coords.Count > 0)
+                {
+                    List<Result> results = new List<Result>();
+                    List<WeatherResult> detailResults = WeatherService.GetDetailWeather(coords[0], _settings).Result;
+                    foreach(WeatherResult detailResult in detailResults)
+                    {
+                        results.Add(new Result() { Title = detailResult.Title, SubTitle = detailResult.SubTitle, IcoPath = detailResult.IcoPath });
+                    }
+                    return results;
+                }
+                return new List<Result>() { new Result() { Title = search, SubTitle = "Can't find this city", IcoPath = "Images\\plugin.png" } };
+            }
+            catch(Exception e)
+            {
+                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" } };
+            }
         }
 
         private List<Result> GetWeather(string keyword, string search)
@@ -117,7 +146,7 @@ namespace custom_weather
                     title += " - " + weatherResult.Title;
                     string subTitle = weatherResult.SubTitle;
                     string icoPath = weatherResult.IcoPath;
-                    Func<ActionContext, bool> DetailViewAction = ac => { _context.API.ChangeQuery(keyword + " " + search + "!"); return false; };
+                    Func<ActionContext, bool> DetailViewAction = ac => { _context.API.ChangeQuery(keyword + " " + coord.Name + ", " + coord.Country + "!"); return false; };
                     results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath, Action = DetailViewAction });
                 }
                 return results;
