@@ -143,10 +143,11 @@ namespace custom_weather
                             }
                         }
                     }
+                    string locationOnly = title;
+                    Func<ActionContext, bool> DetailViewAction = ac => { _context.API.ChangeQuery(keyword + " " + locationOnly + "!"); return false; };
                     title += " - " + weatherResult.Title;
                     string subTitle = weatherResult.SubTitle;
                     string icoPath = weatherResult.IcoPath;
-                    Func<ActionContext, bool> DetailViewAction = ac => { _context.API.ChangeQuery(keyword + " " + coord.Name + ", " + coord.Country + "!"); return false; };
                     results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath, Action = DetailViewAction });
                 }
                 return results;

@@ -202,7 +202,6 @@ namespace custom_weather
             {
                 string requestUrl = string.Format("https://geocoding-api.open-meteo.com/v1/search?name={0}&count=5", location);
                 var response = await _client.GetAsync(requestUrl);
-
                 if(response.IsSuccessStatusCode)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
@@ -223,14 +222,41 @@ namespace custom_weather
                         if(cityAndCountry.Length == 2)
                         {
                             List<Coordinates> cityCoords = await GetCoordinates(cityAndCountry[0]);
-
                             List<Coordinates> coordinates = new List<Coordinates>();
                             foreach(Coordinates city in cityCoords)
                             {
                                 string searchCountry = cityAndCountry[1].ToLower().Trim();
+                                string region = "";
+                                if(searchCountry.Contains("("))
+                                {
+                                    string[] countryAndRegion = searchCountry.Split('(');
+                                    searchCountry = countryAndRegion[0].Trim();
+                                    region = countryAndRegion[1].Trim().ToLower();
+                                    if(region.Contains(")"))
+                                    {
+                                        region = region.Remove(region.IndexOf(")"), 1);
+                                    }
+                                }
                                 if(city.Country.ToLower() == searchCountry || city.CountryCode.ToLower() == searchCountry)
                                 {
-                                    coordinates.Add(city);
+                                    if(region != "")
+                                    {
+                                        if(city.Region.ToLower() == region)
+                                        {
+                                            coordinates.Add(city);
+                                        }
+                                        else if(region.Contains("Post: "))
+                                        {
+                                            if(city.PostCodes[0].ToLower() == region.Remove(region.IndexOf("Post: "), 1))
+                                            {
+                                                coordinates.Add(city);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        coordinates.Add(city);
+                                    }
                                 }
                             }
                             if(coordinates.Count > 0)
