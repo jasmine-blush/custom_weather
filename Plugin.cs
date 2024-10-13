@@ -72,9 +72,9 @@ namespace custom_weather
             }
             else
             {
-                if(search.EndsWith("!"))
+                if(search.Contains("!"))
                 {
-                    List<Result> detailResults = GetDetailWeather(search);
+                    List<Result> detailResults = GetDetailWeather(query.ActionKeyword, search);
                     foreach(Result detailResult in detailResults)
                     {
                         results.Add(detailResult);
@@ -92,29 +92,49 @@ namespace custom_weather
             return results;
         }
 
-        private List<Result> GetDetailWeather(string search)
+        private List<Result> GetDetailWeather(string keyword, string search)
         {
             try
             {
-                search = search.Remove(search.Length - 1, 1); // remove ! at end
-                List<Coordinates> coords = WeatherService.GetCoordinates(search).Result;
+                string[] searchAndSelection = search.Split('!');
+                search = searchAndSelection[0];
 
-                if(coords.Count > 0)
+                List<Coordinates> coords = WeatherService.GetCoordinates(search).Result;
+                if(coords.Count > 1)
                 {
-                    List<Result> results = new List<Result>();
-                    List<WeatherResult> detailResults = WeatherService.GetDetailWeather(coords[0], _settings).Result;
-                    foreach(WeatherResult detailResult in detailResults)
+                    if(int.TryParse(searchAndSelection[1], out int selection))
                     {
-                        results.Add(new Result() { Title = detailResult.Title, SubTitle = detailResult.SubTitle, IcoPath = detailResult.IcoPath });
+                        selection--;
+                        if(selection >= 0 && selection < coords.Count)
+                        {
+                            return GetDetailResults(coords, selection);
+                        }
+                        return new List<Result>() { new Result() { Title = search, SubTitle = "Can't findd this city", IcoPath = "Images\\plugin.png" } };
                     }
-                    return results;
+                    return GetWeather(keyword, search);
                 }
-                return new List<Result>() { new Result() { Title = search, SubTitle = "Can't find this city", IcoPath = "Images\\plugin.png" } };
+                else if(coords.Count == 1)
+                {
+                    return GetDetailResults(coords, 0);
+
+                }
+                return new List<Result>() { new Result() { Title = search, SubTitle = "Can't finddd this city", IcoPath = "Images\\plugin.png" } };
             }
             catch(Exception e)
             {
                 return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" } };
             }
+        }
+
+        private List<Result> GetDetailResults(List<Coordinates> coords, int index)
+        {
+            List<Result> results = new List<Result>();
+            List<WeatherResult> detailResults = WeatherService.GetDetailWeather(coords[index], _settings).Result;
+            foreach(WeatherResult detailResult in detailResults)
+            {
+                results.Add(new Result() { Title = detailResult.Title, SubTitle = detailResult.SubTitle, IcoPath = detailResult.IcoPath });
+            }
+            return results;
         }
 
         private List<Result> GetWeather(string keyword, string search)
