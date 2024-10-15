@@ -194,6 +194,9 @@ namespace custom_weather
 
     public struct DailyData
     {
+        [JsonProperty("weather_code")]
+        public int[] WeatherCode;
+
         [JsonProperty("temperature_2m_max")]
         public string[] MaxTemps;
 

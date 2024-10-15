@@ -286,10 +286,10 @@ namespace custom_weather
         public string GetDaily()
         {
             List<string> data = new List<string>();
-            if(MaxTemp == 1)
+            /*if(MaxTemp == 1)
                 data.Add("temperature_2m_max");
             if(MinTemp == 1)
-                data.Add("temperature_2m_min");
+                data.Add("temperature_2m_min");*/
 
             return string.Join(",", data);
         }

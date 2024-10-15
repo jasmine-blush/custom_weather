@@ -78,11 +78,11 @@ namespace custom_weather
                 { "wind_speed_unit", settings.WindUnit.ToString() },
                 { "precipitation_unit", settings.RainUnit.ToString() },
                 { "current", "weather_code,temperature_2m,is_day," + settings.WeatherData.GetCurrent() },
-                { "daily", settings.WeatherData.GetDaily() }
+                { "daily", "weather_code,temperature_2m_max,temperature_2m_min" + settings.WeatherData.GetDaily() }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
 
-            string requestKey = body.ReadAsStringAsync().Result + settings.DirectionUnit + day.ToString();
+            string requestKey = body.ReadAsStringAsync().Result + settings.WeatherData.MaxTemp.ToString() + settings.WeatherData.MinTemp.ToString() + settings.DirectionUnit + day.ToString();
             if(!WeatherCache.HasCached(requestKey, Int32.Parse(settings.CacheDuration.GetDescription())))
             {
                 var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
@@ -93,11 +93,11 @@ namespace custom_weather
                     OpenMeteoData omData = JsonConvert.DeserializeObject<OpenMeteoData>(responseString);
 
                     WeatherResult result = new WeatherResult();
-                    if(_wmoCodes.TryGetValue(omData.Current.WeatherCode, out string[] weatherType))
+                    if(_wmoCodes.TryGetValue(day == 0 ? omData.Current.WeatherCode : omData.Daily.WeatherCode[day], out string[] weatherType))
                     {
                         result.Title = weatherType[0];
                         result.IcoPath = weatherType[1];
-                        if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2)
+                        if(omData.Current.IsDay == 0 && omData.Current.WeatherCode <= 2 && day == 0)
                         {
                             result.IcoPath += "_night";
                         }
@@ -124,9 +124,9 @@ namespace custom_weather
         {
             List<string> data = new List<string>();
 
-            if(omData.Daily.MaxTemps != null)
+            if(settings.WeatherData.MaxTemp == 1 || day != 0)
                 data.Add("Max: " + omData.Daily.MaxTemps[day] + " " + omData.DailyUnits.MaxTemp);
-            if(omData.Daily.MinTemps != null)
+            if(settings.WeatherData.MinTemp == 1 || day != 0)
                 data.Add("Min: " + omData.Daily.MinTemps[day] + " " + omData.DailyUnits.MinTemp);
 
             if(omData.Current.WindSpeed != null)
