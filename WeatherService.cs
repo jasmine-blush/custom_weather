@@ -44,11 +44,32 @@ namespace custom_weather
 
         public static async Task<List<WeatherResult>> GetDetailWeather(Coordinates coords, SettingsSave settings)
         {
-            WeatherResult weatherResult = await GetWeather(coords, settings);
-            return new List<WeatherResult>() { weatherResult };
+            List<WeatherResult> weatherResults = new List<WeatherResult>();
+            DateTime date = DateTime.Now;
+            for(int i = 0; i < 7; i++)
+            {
+                WeatherResult weatherResult = await GetWeather(coords, settings, i);
+                string dateString = "";
+                if(i == 0)
+                {
+                    dateString = "Today";
+                }
+                else if(i == 1)
+                {
+                    dateString = "Tomorrow";
+                }
+                else
+                {
+                    dateString = date.DayOfWeek.ToString();
+                }
+                weatherResult.Title = dateString + " - " + weatherResult.Title;
+                date = date.AddDays(1);
+                weatherResults.Add(weatherResult);
+            }
+            return weatherResults;
         }
 
-        public static async Task<WeatherResult> GetWeather(Coordinates coords, SettingsSave settings)
+        public static async Task<WeatherResult> GetWeather(Coordinates coords, SettingsSave settings, int day)
         {
             Dictionary<string, string> values = new Dictionary<string, string>(){
                 { "latitude", coords.Latitude },
@@ -61,7 +82,7 @@ namespace custom_weather
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
 
-            string requestKey = body.ReadAsStringAsync().Result + settings.DirectionUnit;
+            string requestKey = body.ReadAsStringAsync().Result + settings.DirectionUnit + day.ToString();
             if(!WeatherCache.HasCached(requestKey, Int32.Parse(settings.CacheDuration.GetDescription())))
             {
                 var response = await _client.PostAsync("https://api.open-meteo.com/v1/forecast", body);
@@ -89,7 +110,7 @@ namespace custom_weather
                     }
                     result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
 
-                    result.SubTitle = BuildSubtitle(settings, omData);
+                    result.SubTitle = BuildSubtitle(settings, omData, day);
 
                     WeatherCache.Cache(requestKey, result);
                     return result;
@@ -99,14 +120,14 @@ namespace custom_weather
             return WeatherCache.Retrieve(requestKey);
         }
 
-        private static string BuildSubtitle(SettingsSave settings, OpenMeteoData omData)
+        private static string BuildSubtitle(SettingsSave settings, OpenMeteoData omData, int day)
         {
             List<string> data = new List<string>();
 
             if(omData.Daily.MaxTemps != null)
-                data.Add("Max: " + omData.Daily.MaxTemps[0] + " " + omData.DailyUnits.MaxTemp);
+                data.Add("Max: " + omData.Daily.MaxTemps[day] + " " + omData.DailyUnits.MaxTemp);
             if(omData.Daily.MinTemps != null)
-                data.Add("Min: " + omData.Daily.MinTemps[0] + " " + omData.DailyUnits.MinTemp);
+                data.Add("Min: " + omData.Daily.MinTemps[day] + " " + omData.DailyUnits.MinTemp);
 
             if(omData.Current.WindSpeed != null)
                 data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + omData.CurrentUnits.WindSpeed);

@@ -55,7 +55,7 @@ namespace custom_weather
             {
                 if(!string.IsNullOrEmpty(_settings.Hometown))
                 {
-                    List<Result> weatherResults = GetWeather(query.ActionKeyword, _settings.Hometown);
+                    List<Result> weatherResults = GetDetailWeather(query.ActionKeyword, _settings.Hometown + "!1");
                     foreach(Result weatherResult in weatherResults)
                     {
                         results.Add(weatherResult);
@@ -146,7 +146,7 @@ namespace custom_weather
                 List<Result> results = new List<Result>();
                 foreach(Coordinates coord in coords)
                 {
-                    WeatherResult weatherResult = WeatherService.GetWeather(coord, _settings).Result;
+                    WeatherResult weatherResult = WeatherService.GetWeather(coord, _settings, 0).Result;
 
                     string title = coord.Name + ", " + coord.Country;
                     if(HasMultipleInSameCountry(coord, coords))
