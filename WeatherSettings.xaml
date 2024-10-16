@@ -73,6 +73,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
@@ -100,11 +101,24 @@
                             <CheckBox x:Name="DirectRadiationCheckBox" Checked="DirectRadiationCheckBox_Checked"  Unchecked="DirectRadiationCheckBox_Checked">Direction Radiation</CheckBox>
                             <CheckBox x:Name="DiffuseRadiationCheckBox" Checked="DiffuseRadiationCheckBox_Checked"  Unchecked="DiffuseRadiationCheckBox_Checked">Diffuse Radiation</CheckBox>
                             <CheckBox x:Name="VPDeficitCheckBox" Checked="VPDeficitCheckBox_Checked"  Unchecked="VPDeficitCheckBox_Checked">Vapour Pressure Deficit</CheckBox>
-                            <CheckBox x:Name="CAPECheckBox" Checked="CAPECheckBox_Checked"  Unchecked="CAPECheckBox_Checked">CAPE (Convective available potential energy)</CheckBox>
-                            <CheckBox x:Name="EvapoCheckBox" Checked="EvapoCheckBox_Checked"  Unchecked="EvapoCheckBox_Checked">ET₀ Reference Evapotranspiration</CheckBox>
+                            <CheckBox x:Name="CAPECheckBox" Checked="CAPECheckBox_Checked"  Unchecked="CAPECheckBox_Checked">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>CAPE</TextBlock>
+                                    <TextBlock x:Name="CAPEInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                                </StackPanel>
+                            </CheckBox>
+                            <CheckBox x:Name="EvapoCheckBox" Checked="EvapoCheckBox_Checked"  Unchecked="EvapoCheckBox_Checked">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>ET₀</TextBlock>
+                                    <TextBlock x:Name="EvapoInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                                </StackPanel>
+                            </CheckBox>
                             <CheckBox x:Name="FreezingHeightCheckBox" Checked="FreezingHeightCheckBox_Checked"  Unchecked="FreezingHeightCheckBox_Checked">Freezing Level Height</CheckBox>
                             <CheckBox x:Name="SoilTemperatureCheckBox" Checked="SoilTemperatureCheckBox_Checked"  Unchecked="SoilTemperatureCheckBox_Checked">Soil Temperature</CheckBox>
                             <CheckBox x:Name="SoilMoistureCheckBox" Checked="SoilMoistureCheckBox_Checked"  Unchecked="SoilMoistureCheckBox_Checked">Soil Moisture</CheckBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                            <Label FontWeight="Bold">Forecast:</Label>
                         </StackPanel>
                     </Grid>
                 </GroupItem>

@@ -16,6 +16,8 @@ namespace custom_weather
         private readonly string _rain_help = "Set the default unit for Precipitation amount.";
         private readonly string _direction_help = "Set whether Wind Direction is displayed in degrees or compass directions.";
         private readonly string _data_help = "Adjust which weather data is shown in the results.";
+        private readonly string _cape_help = "Convective available potential energy";
+        private readonly string _evapo_help = "ET₀ Reference Evapotranspiration";
         private readonly SettingsSave _settings;
 
         public WeatherSettings(SettingsSave settings)
@@ -29,6 +31,8 @@ namespace custom_weather
             CreateToolTip(RainUnitInfo, _rain_help);
             CreateToolTip(DirectionUnitInfo, _direction_help);
             CreateToolTip(WeatherDataInfo, _data_help);
+            CreateToolTip(CAPEInfo, _cape_help);
+            CreateToolTip(EvapoInfo, _evapo_help);
 
             _settings = settings;
         }
