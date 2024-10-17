@@ -199,6 +199,45 @@ namespace custom_weather
         [JsonProperty("soilmoisture")]
         public int SoilMoisture = 0;
 
+        [JsonProperty("daily_temperature_2m_max")]
+        public int DailyMaxTemp = 1;
+
+        [JsonProperty("daily_temperature_2m_min")]
+        public int DailyMinTemp = 1;
+
+        [JsonProperty("daily_wind_speed_10m_max")]
+        public int DailyMaxWind = 1;
+
+        [JsonProperty("daily_sunshine_duration")]
+        public int DailySunshineDuration = 1;
+
+        [JsonProperty("daily_precipitation_probability_mean")]
+        public int DailyPrecipChance = 1;
+
+        [JsonProperty("daily_precipitation_sum")]
+        public int DailyTotalPrecip = 1;
+
+        [JsonProperty("daily_apparent_temperature_max")]
+        public int DailyFeelsLikeMax = 0;
+
+        [JsonProperty("daily_apparent_temperature_min")]
+        public int DailyFeelsLikeMin = 0;
+
+        [JsonProperty("daily_snowfall_sum")]
+        public int DailyTotalSnowfall = 0;
+
+        [JsonProperty("daily_wind_direction_10m_dominant")]
+        public int DailyWindDirection = 0;
+
+        [JsonProperty("daily_shortwave_radiation_sum")]
+        public int DailyTotalShortRadiation = 0;
+
+        [JsonProperty("daily_et0_fao_evapotranspiration")]
+        public int DailyTotalEvapo = 0;
+
+        [JsonProperty("daily_uv_index_max")]
+        public int DailyMaxUVIndex = 0;
+
         public void Validate()
         {
             MaxTemp = IsValid(MaxTemp) ? MaxTemp : 1;
@@ -226,6 +265,22 @@ namespace custom_weather
             FreezingHeight = IsValid(FreezingHeight) ? FreezingHeight : 0;
             SoilTemperature = IsValid(SoilTemperature) ? SoilTemperature : 0;
             SoilMoisture = IsValid(SoilMoisture) ? SoilMoisture : 0;
+
+
+            DailyMaxTemp = IsValid(DailyMaxTemp) ? DailyMaxTemp : 1;
+            DailyMinTemp = IsValid(DailyMinTemp) ? DailyMinTemp : 1;
+            DailyMaxWind = IsValid(DailyMaxWind) ? DailyMaxWind : 1;
+            DailySunshineDuration = IsValid(DailySunshineDuration) ? DailySunshineDuration : 1;
+            DailyPrecipChance = IsValid(DailyPrecipChance) ? DailyPrecipChance : 1;
+            DailyTotalPrecip = IsValid(DailyTotalPrecip) ? DailyTotalPrecip : 1;
+
+            DailyFeelsLikeMax = IsValid(DailyFeelsLikeMax) ? DailyFeelsLikeMax : 0;
+            DailyFeelsLikeMin = IsValid(DailyFeelsLikeMin) ? DailyFeelsLikeMin : 0;
+            DailyTotalSnowfall = IsValid(DailyTotalSnowfall) ? DailyTotalSnowfall : 0;
+            DailyWindDirection = IsValid(DailyWindDirection) ? DailyWindDirection : 0;
+            DailyTotalShortRadiation = IsValid(DailyTotalShortRadiation) ? DailyTotalShortRadiation : 0;
+            DailyTotalEvapo = IsValid(DailyTotalEvapo) ? DailyTotalEvapo : 0;
+            DailyMaxUVIndex = IsValid(DailyMaxUVIndex) ? DailyMaxUVIndex : 0;
         }
 
         private bool IsValid(int value)
@@ -236,6 +291,7 @@ namespace custom_weather
         public string GetCurrent()
         {
             List<string> data = new List<string>();
+
             if(WindSpeed == 1)
                 data.Add("wind_speed_10m");
             if(WindDirection == 1)
@@ -286,10 +342,29 @@ namespace custom_weather
         public string GetDaily()
         {
             List<string> data = new List<string>();
-            if(MaxTemp == 1)
-                data.Add("temperature_2m_max");
-            if(MinTemp == 1)
-                data.Add("temperature_2m_min");
+
+            if(DailyMaxWind == 1)
+                data.Add("wind_speed_10m_max");
+            if(DailySunshineDuration == 1)
+                data.Add("sunshine_duration");
+            if(DailyPrecipChance == 1)
+                data.Add("precipitation_probability_mean");
+            if(DailyTotalPrecip == 1)
+                data.Add("precipitation_sum");
+            if(DailyFeelsLikeMax == 1)
+                data.Add("apparent_temperature_max");
+            if(DailyFeelsLikeMin == 1)
+                data.Add("apparent_temperature_min");
+            if(DailyTotalSnowfall == 1)
+                data.Add("snowfall_sum");
+            if(DailyWindDirection == 1)
+                data.Add("wind_direction_10m_dominant");
+            if(DailyTotalShortRadiation == 1)
+                data.Add("shortwave_radiation_sum");
+            if(DailyTotalEvapo == 1)
+                data.Add("et0_fao_evapotranspiration");
+            if(DailyMaxUVIndex == 1)
+                data.Add("uv_index_max");
 
             return string.Join(",", data);
         }

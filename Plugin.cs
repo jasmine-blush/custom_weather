@@ -55,7 +55,7 @@ namespace custom_weather
             {
                 if(!string.IsNullOrEmpty(_settings.Hometown))
                 {
-                    List<Result> weatherResults = GetWeather(_settings.Hometown);
+                    List<Result> weatherResults = GetDetailWeather(query.ActionKeyword, _settings.Hometown + "!1");
                     foreach(Result weatherResult in weatherResults)
                     {
                         results.Add(weatherResult);
@@ -72,16 +72,72 @@ namespace custom_weather
             }
             else
             {
-                List<Result> weatherResults = GetWeather(search);
-                foreach(Result weatherResult in weatherResults)
+                if(search.Contains("!"))
                 {
-                    results.Add(weatherResult);
+                    List<Result> detailResults = GetDetailWeather(query.ActionKeyword, search);
+                    foreach(Result detailResult in detailResults)
+                    {
+                        results.Add(detailResult);
+                    }
+                }
+                else
+                {
+                    List<Result> weatherResults = GetWeather(query.ActionKeyword, search);
+                    foreach(Result weatherResult in weatherResults)
+                    {
+                        results.Add(weatherResult);
+                    }
                 }
             }
             return results;
         }
 
-        private List<Result> GetWeather(string search)
+        private List<Result> GetDetailWeather(string keyword, string search)
+        {
+            try
+            {
+                string[] searchAndSelection = search.Split('!');
+                search = searchAndSelection[0];
+
+                List<Coordinates> coords = WeatherService.GetCoordinates(search).Result;
+                if(coords.Count > 1)
+                {
+                    if(int.TryParse(searchAndSelection[1], out int selection))
+                    {
+                        selection--;
+                        if(selection >= 0 && selection < coords.Count)
+                        {
+                            return GetDetailResults(coords, selection);
+                        }
+                        return new List<Result>() { new Result() { Title = search, SubTitle = "Can't findd this city", IcoPath = "Images\\plugin.png" } };
+                    }
+                    return GetWeather(keyword, search);
+                }
+                else if(coords.Count == 1)
+                {
+                    return GetDetailResults(coords, 0);
+
+                }
+                return new List<Result>() { new Result() { Title = search, SubTitle = "Can't finddd this city", IcoPath = "Images\\plugin.png" } };
+            }
+            catch(Exception e)
+            {
+                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" } };
+            }
+        }
+
+        private List<Result> GetDetailResults(List<Coordinates> coords, int index)
+        {
+            List<Result> results = new List<Result>();
+            List<WeatherResult> detailResults = WeatherService.GetDetailWeather(coords[index], _settings).Result;
+            foreach(WeatherResult detailResult in detailResults)
+            {
+                results.Add(new Result() { Title = detailResult.Title, SubTitle = detailResult.SubTitle, IcoPath = detailResult.IcoPath });
+            }
+            return results;
+        }
+
+        private List<Result> GetWeather(string keyword, string search)
         {
             try
             {
@@ -90,7 +146,7 @@ namespace custom_weather
                 List<Result> results = new List<Result>();
                 foreach(Coordinates coord in coords)
                 {
-                    WeatherResult weatherResult = WeatherService.GetWeather(coord, _settings).Result;
+                    WeatherResult weatherResult = WeatherService.GetWeather(coord, _settings, 0).Result;
 
                     string title = coord.Name + ", " + coord.Country;
                     if(HasMultipleInSameCountry(coord, coords))
@@ -107,10 +163,12 @@ namespace custom_weather
                             }
                         }
                     }
+                    string locationOnly = title;
+                    Func<ActionContext, bool> DetailViewAction = ac => { _context.API.ChangeQuery(keyword + " " + locationOnly + "!"); return false; };
                     title += " - " + weatherResult.Title;
                     string subTitle = weatherResult.SubTitle;
                     string icoPath = weatherResult.IcoPath;
-                    results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath });
+                    results.Add(new Result() { Title = title, SubTitle = subTitle, IcoPath = icoPath, Action = DetailViewAction });
                 }
                 return results;
             }

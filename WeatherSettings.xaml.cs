@@ -15,7 +15,9 @@ namespace custom_weather
         private readonly string _wind_help = "Set the default unit for Wind Speed.";
         private readonly string _rain_help = "Set the default unit for Precipitation amount.";
         private readonly string _direction_help = "Set whether Wind Direction is displayed in degrees or compass directions.";
-        private readonly string _data_help = "Adjust which weather data is shown in the results.";
+        private readonly string _data_help = "Adjust which weather data is shown in the results and in forecasts.";
+        private readonly string _cape_help = "Convective available potential energy";
+        private readonly string _evapo_help = "ET₀ Reference Evapotranspiration";
         private readonly SettingsSave _settings;
 
         public WeatherSettings(SettingsSave settings)
@@ -29,6 +31,8 @@ namespace custom_weather
             CreateToolTip(RainUnitInfo, _rain_help);
             CreateToolTip(DirectionUnitInfo, _direction_help);
             CreateToolTip(WeatherDataInfo, _data_help);
+            CreateToolTip(CAPEInfo, _cape_help);
+            CreateToolTip(EvapoInfo, _evapo_help);
 
             _settings = settings;
         }
@@ -81,6 +85,20 @@ namespace custom_weather
             FreezingHeightCheckBox.IsChecked = _settings.WeatherData.FreezingHeight == 1 ? true : false;
             SoilTemperatureCheckBox.IsChecked = _settings.WeatherData.SoilTemperature == 1 ? true : false;
             SoilMoistureCheckBox.IsChecked = _settings.WeatherData.SoilMoisture == 1 ? true : false;
+
+            DailyMaxTempCheckBox.IsChecked = _settings.WeatherData.DailyMaxTemp == 1 ? true : false;
+            DailyMinTempCheckBox.IsChecked = _settings.WeatherData.DailyMinTemp == 1 ? true : false;
+            DailyMaxWindCheckBox.IsChecked = _settings.WeatherData.DailyMaxWind == 1 ? true : false;
+            DailySunshineDurationCheckBox.IsChecked = _settings.WeatherData.DailySunshineDuration == 1 ? true : false;
+            DailyPrecipChanceCheckBox.IsChecked = _settings.WeatherData.DailyPrecipChance == 1 ? true : false;
+            DailyTotalPrecipCheckBox.IsChecked = _settings.WeatherData.DailyTotalPrecip == 1 ? true : false;
+            DailyFeelsLikeMaxCheckBox.IsChecked = _settings.WeatherData.DailyFeelsLikeMax == 1 ? true : false;
+            DailyFeelsLikeMinCheckBox.IsChecked = _settings.WeatherData.DailyFeelsLikeMin == 1 ? true : false;
+            DailyTotalSnowfallCheckBox.IsChecked = _settings.WeatherData.DailyTotalSnowfall == 1 ? true : false;
+            DailyWindDirectionCheckBox.IsChecked = _settings.WeatherData.DailyWindDirection == 1 ? true : false;
+            DailyTotalShortRadiationCheckBox.IsChecked = _settings.WeatherData.DailyTotalShortRadiation == 1 ? true : false;
+            DailyTotalEvapoCheckBox.IsChecked = _settings.WeatherData.DailyTotalEvapo == 1 ? true : false;
+            DailyMaxUVIndexCheckBox.IsChecked = _settings.WeatherData.DailyMaxUVIndex == 1 ? true : false;
         }
 
         private void HometownTextbox_TextChanged(object sender, TextChangedEventArgs e)
@@ -340,6 +358,123 @@ namespace custom_weather
             if(IsLoaded)
             {
                 _settings.WeatherData.SoilMoisture = SoilMoistureCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyMaxTempCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyMaxTemp = DailyMaxTempCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyMinTempCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyMinTemp = DailyMinTempCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyMaxWindCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyMaxWind = DailyMaxWindCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailySunshineDurationCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailySunshineDuration = DailySunshineDurationCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyPrecipChanceCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyPrecipChance = DailyPrecipChanceCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyTotalPrecipCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyTotalPrecip = DailyTotalPrecipCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyFeelsLikeMaxCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyFeelsLikeMax = DailyFeelsLikeMaxCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyFeelsLikeMinCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyFeelsLikeMin = DailyFeelsLikeMinCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyTotalSnowfallCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyTotalSnowfall = DailyTotalSnowfallCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyWindDirectionCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyWindDirection = DailyWindDirectionCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyTotalShortRadiationCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyTotalShortRadiation = DailyTotalShortRadiationCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyTotalEvapoCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyTotalEvapo = DailyTotalEvapoCheckBox.IsChecked.Value ? 1 : 0;
+                _settings.Save();
+            }
+        }
+
+        private void DailyMaxUVIndexCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if(IsLoaded)
+            {
+                _settings.WeatherData.DailyMaxUVIndex = DailyMaxUVIndexCheckBox.IsChecked.Value ? 1 : 0;
                 _settings.Save();
             }
         }

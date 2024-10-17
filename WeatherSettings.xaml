@@ -72,12 +72,13 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto" MinWidth="180"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,20,0">
+                        <StackPanel Grid.Column="0" Orientation="Vertical">
                             <Label FontWeight="Bold">Basic:</Label>
                             <CheckBox x:Name="MaxTempCheckBox" Checked="MaxTempCheckBox_Checked" Unchecked="MaxTempCheckBox_Checked">Max Temp</CheckBox>
                             <CheckBox x:Name="MinTempCheckBox" Checked="MinTempCheckBox_Checked" Unchecked="MinTempCheckBox_Checked">Min Temp</CheckBox>
@@ -100,11 +101,37 @@
                             <CheckBox x:Name="DirectRadiationCheckBox" Checked="DirectRadiationCheckBox_Checked"  Unchecked="DirectRadiationCheckBox_Checked">Direction Radiation</CheckBox>
                             <CheckBox x:Name="DiffuseRadiationCheckBox" Checked="DiffuseRadiationCheckBox_Checked"  Unchecked="DiffuseRadiationCheckBox_Checked">Diffuse Radiation</CheckBox>
                             <CheckBox x:Name="VPDeficitCheckBox" Checked="VPDeficitCheckBox_Checked"  Unchecked="VPDeficitCheckBox_Checked">Vapour Pressure Deficit</CheckBox>
-                            <CheckBox x:Name="CAPECheckBox" Checked="CAPECheckBox_Checked"  Unchecked="CAPECheckBox_Checked">CAPE (Convective available potential energy)</CheckBox>
-                            <CheckBox x:Name="EvapoCheckBox" Checked="EvapoCheckBox_Checked"  Unchecked="EvapoCheckBox_Checked">ET₀ Reference Evapotranspiration</CheckBox>
+                            <CheckBox x:Name="CAPECheckBox" Checked="CAPECheckBox_Checked"  Unchecked="CAPECheckBox_Checked">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>CAPE</TextBlock>
+                                    <TextBlock x:Name="CAPEInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                                </StackPanel>
+                            </CheckBox>
+                            <CheckBox x:Name="EvapoCheckBox" Checked="EvapoCheckBox_Checked"  Unchecked="EvapoCheckBox_Checked">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>ET₀</TextBlock>
+                                    <TextBlock x:Name="EvapoInfo" Text="(?)" VerticalAlignment="Center" TextAlignment="Center" Width="20" Foreground="Blue"/>
+                                </StackPanel>
+                            </CheckBox>
                             <CheckBox x:Name="FreezingHeightCheckBox" Checked="FreezingHeightCheckBox_Checked"  Unchecked="FreezingHeightCheckBox_Checked">Freezing Level Height</CheckBox>
                             <CheckBox x:Name="SoilTemperatureCheckBox" Checked="SoilTemperatureCheckBox_Checked"  Unchecked="SoilTemperatureCheckBox_Checked">Soil Temperature</CheckBox>
                             <CheckBox x:Name="SoilMoistureCheckBox" Checked="SoilMoistureCheckBox_Checked"  Unchecked="SoilMoistureCheckBox_Checked">Soil Moisture</CheckBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Vertical">
+                            <Label FontWeight="Bold">Forecast:</Label>
+                            <CheckBox x:Name="DailyMaxTempCheckBox" Checked="DailyMaxTempCheckBox_Checked"  Unchecked="DailyMaxTempCheckBox_Checked">Max Temp</CheckBox>
+                            <CheckBox x:Name="DailyMinTempCheckBox" Checked="DailyMinTempCheckBox_Checked"  Unchecked="DailyMinTempCheckBox_Checked">Min Temp</CheckBox>
+                            <CheckBox x:Name="DailyMaxWindCheckBox" Checked="DailyMaxWindCheckBox_Checked"  Unchecked="DailyMaxWindCheckBox_Checked">Max Wind</CheckBox>
+                            <CheckBox x:Name="DailySunshineDurationCheckBox" Checked="DailySunshineDurationCheckBox_Checked"  Unchecked="DailySunshineDurationCheckBox_Checked">Sunshine Duration</CheckBox>
+                            <CheckBox x:Name="DailyPrecipChanceCheckBox" Checked="DailyPrecipChanceCheckBox_Checked"  Unchecked="DailyPrecipChanceCheckBox_Checked">Precipitation Chance</CheckBox>
+                            <CheckBox x:Name="DailyTotalPrecipCheckBox" Checked="DailyTotalPrecipCheckBox_Checked"  Unchecked="DailyTotalPrecipCheckBox_Checked">Total Precipitation</CheckBox>
+                            <CheckBox x:Name="DailyFeelsLikeMaxCheckBox" Checked="DailyFeelsLikeMaxCheckBox_Checked"  Unchecked="DailyFeelsLikeMaxCheckBox_Checked">Max Feels Like</CheckBox>
+                            <CheckBox x:Name="DailyFeelsLikeMinCheckBox" Checked="DailyFeelsLikeMinCheckBox_Checked"  Unchecked="DailyFeelsLikeMinCheckBox_Checked">Min Feels Like</CheckBox>
+                            <CheckBox x:Name="DailyTotalSnowfallCheckBox" Checked="DailyTotalSnowfallCheckBox_Checked"  Unchecked="DailyTotalSnowfallCheckBox_Checked">Total Snowfall</CheckBox>
+                            <CheckBox x:Name="DailyWindDirectionCheckBox" Checked="DailyWindDirectionCheckBox_Checked"  Unchecked="DailyWindDirectionCheckBox_Checked">Wind Direction</CheckBox>
+                            <CheckBox x:Name="DailyTotalShortRadiationCheckBox" Checked="DailyTotalShortRadiationCheckBox_Checked"  Unchecked="DailyTotalShortRadiationCheckBox_Checked">Total Shortwave Radiation</CheckBox>
+                            <CheckBox x:Name="DailyTotalEvapoCheckBox" Checked="DailyTotalEvapoCheckBox_Checked"  Unchecked="DailyTotalEvapoCheckBox_Checked">Total ET₀</CheckBox>
+                            <CheckBox x:Name="DailyMaxUVIndexCheckBox" Checked="DailyMaxUVIndexCheckBox_Checked"  Unchecked="DailyMaxUVIndexCheckBox_Checked">Max UV Index</CheckBox>
                         </StackPanel>
                     </Grid>
                 </GroupItem>
