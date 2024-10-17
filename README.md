@@ -10,7 +10,7 @@ View a weather forecast of 7 days by adding a ``!`` after the city or simply by 
 </br></br>
 <img width="600" src="Images\\forecast.png"/>
 </br></br>
-If the city name is ambiguous, you can also add a number number after the ``!``.  
+If the city name is ambiguous, you can also add a number after the ``!``.  
 In this example, the second result in the list is selected, which shows a forecast for London in Canada, rather than for London in the UK.
 </br></br>
 <img width="600" src="Images\\forecast_selection.png"/>
