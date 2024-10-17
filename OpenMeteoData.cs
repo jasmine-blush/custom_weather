@@ -202,6 +202,39 @@ namespace custom_weather
 
         [JsonProperty("temperature_2m_min")]
         public string[] MinTemps;
+
+        [JsonProperty("wind_speed_10m_max")]
+        public string[] MaxWind;
+
+        [JsonProperty("sunshine_duration")]
+        public string[] SunshineDuration;
+
+        [JsonProperty("precipitation_probability_mean")]
+        public string[] PrecipChance;
+
+        [JsonProperty("precipitation_sum")]
+        public string[] TotalPrecip;
+
+        [JsonProperty("apparent_temperature_max")]
+        public string[] FeelsLikeMax;
+
+        [JsonProperty("apparent_temperature_min")]
+        public string[] FeelsLikeMin;
+
+        [JsonProperty("snowfall_sum")]
+        public string[] TotalSnowfall;
+
+        [JsonProperty("wind_direction_10m_dominant")]
+        public string[] WindDirection;
+
+        [JsonProperty("shortwave_radiation_sum")]
+        public string[] TotalShortRadiation;
+
+        [JsonProperty("et0_fao_evapotranspiration")]
+        public string[] TotalEvapo;
+
+        [JsonProperty("uv_index_max")]
+        public string[] MaxUVIndex;
     }
 
     public struct DailyUnits
@@ -211,6 +244,39 @@ namespace custom_weather
 
         [JsonProperty("temperature_2m_min")]
         public string MinTemp;
+
+        [JsonProperty("wind_speed_10m_max")]
+        public string MaxWind;
+
+        [JsonProperty("sunshine_duration")]
+        public string SunshineDuration;
+
+        [JsonProperty("precipitation_probability_mean")]
+        public string PrecipChance;
+
+        [JsonProperty("precipitation_sum")]
+        public string TotalPrecip;
+
+        [JsonProperty("apparent_temperature_max")]
+        public string FeelsLikeMax;
+
+        [JsonProperty("apparent_temperature_min")]
+        public string FeelsLikeMin;
+
+        [JsonProperty("snowfall_sum")]
+        public string TotalSnowfall;
+
+        [JsonProperty("wind_direction_10m_dominant")]
+        public string WindDirection;
+
+        [JsonProperty("shortwave_radiation_sum")]
+        public string TotalShortRadiation;
+
+        [JsonProperty("et0_fao_evapotranspiration")]
+        public string TotalEvapo;
+
+        [JsonProperty("uv_index_max")]
+        public string MaxUVIndex;
     }
 
     public struct WeatherResult

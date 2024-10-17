@@ -78,7 +78,7 @@ namespace custom_weather
                 { "wind_speed_unit", settings.WindUnit.ToString() },
                 { "precipitation_unit", settings.RainUnit.ToString() },
                 { "current", "weather_code,temperature_2m,is_day," + settings.WeatherData.GetCurrent() },
-                { "daily", "weather_code,temperature_2m_max,temperature_2m_min" + settings.WeatherData.GetDaily() }
+                { "daily", "weather_code,temperature_2m_max,temperature_2m_min," + settings.WeatherData.GetDaily() }
             };
             FormUrlEncodedContent body = new FormUrlEncodedContent(values);
 
@@ -108,7 +108,10 @@ namespace custom_weather
                         result.Title = "Unknown Weather";
                         result.IcoPath = "Images\\plugin.png";
                     }
-                    result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
+                    if(day == 0)
+                    {
+                        result.Title += " @ " + omData.Current.Temperature + " " + settings.TempUnit.GetDescription();
+                    }
 
                     result.SubTitle = BuildSubtitle(settings, omData, day);
 
@@ -124,58 +127,132 @@ namespace custom_weather
         {
             List<string> data = new List<string>();
 
-            if(settings.WeatherData.MaxTemp == 1 || day != 0)
-                data.Add("Max: " + omData.Daily.MaxTemps[day] + " " + omData.DailyUnits.MaxTemp);
-            if(settings.WeatherData.MinTemp == 1 || day != 0)
-                data.Add("Min: " + omData.Daily.MinTemps[day] + " " + omData.DailyUnits.MinTemp);
-
-            if(omData.Current.WindSpeed != null)
-                data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + omData.CurrentUnits.WindSpeed);
-            if(omData.Current.WindDirection != null)
+            if(day == 0)
             {
-                string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection + omData.CurrentUnits.WindDirection : ToCompass(omData.Current.WindDirection);
-                data.Add("Wind Direction: " + windDirection);
+                if(settings.WeatherData.MaxTemp == 1)
+                    data.Add("Max: " + omData.Daily.MaxTemps[day] + " " + omData.DailyUnits.MaxTemp);
+                if(settings.WeatherData.MinTemp == 1)
+                    data.Add("Min: " + omData.Daily.MinTemps[day] + " " + omData.DailyUnits.MinTemp);
+
+                if(omData.Current.WindSpeed != null)
+                    data.Add("Wind Speed: " + omData.Current.WindSpeed + " " + omData.CurrentUnits.WindSpeed);
+                if(omData.Current.WindDirection != null)
+                {
+                    string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Current.WindDirection + omData.CurrentUnits.WindDirection : ToCompass(omData.Current.WindDirection);
+                    data.Add("Wind Direction: " + windDirection);
+                }
+                if(omData.Current.FeelsLike != null)
+                    data.Add("Feels Like: " + omData.Current.FeelsLike + " " + omData.CurrentUnits.FeelsLike);
+                if(omData.Current.Humidity != null)
+                    data.Add("Humidity: " + omData.Current.Humidity + " " + omData.CurrentUnits.Humidity);
+                if(omData.Current.DewPoint != null)
+                    data.Add("Dew Point: " + omData.Current.DewPoint + " " + omData.CurrentUnits.DewPoint);
+                if(omData.Current.Pressure != null)
+                    data.Add("Pressure: " + omData.Current.Pressure + " " + omData.CurrentUnits.Pressure);
+                if(omData.Current.CloudCover != null)
+                    data.Add("Cloud Cover: " + omData.Current.CloudCover + " " + omData.CurrentUnits.CloudCover);
+                if(omData.Current.TotalPrecip != null)
+                    data.Add("Total Rain: " + omData.Current.TotalPrecip + " " + omData.CurrentUnits.TotalPrecip);
+                if(omData.Current.PrecipChance != null)
+                    data.Add("Rain Chance: " + omData.Current.PrecipChance + " " + omData.CurrentUnits.PrecipChance);
+                if(omData.Current.Snowfall != null)
+                    data.Add("Snowfall: " + omData.Current.Snowfall + " " + omData.CurrentUnits.Snowfall);
+                if(omData.Current.SnowDepth != null)
+                    data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + omData.CurrentUnits.SnowDepth);
+                if(omData.Current.Visibility != null)
+                {
+                    if(float.TryParse(omData.Current.Visibility, out float parsed))
+                    {
+                        int visibility = (int)parsed;
+                        data.Add("Visibility: " + visibility.ToString() + " " + omData.CurrentUnits.Visibility);
+                    }
+                    else
+                    {
+                        data.Add("Visibility: " + omData.Current.Visibility + " " + omData.CurrentUnits.Visibility);
+                    }
+                }
+
+                if(omData.Current.ShortRadiation != null)
+                    data.Add("Shortwave: " + omData.Current.ShortRadiation + " " + omData.CurrentUnits.ShortRadiation);
+                if(omData.Current.DirectRadiation != null)
+                    data.Add("Direct: " + omData.Current.DirectRadiation + " " + omData.CurrentUnits.DirectRadiation);
+                if(omData.Current.DiffuseRadiation != null)
+                    data.Add("Diffuse: " + omData.Current.DiffuseRadiation + " " + omData.CurrentUnits.DiffuseRadiation);
+                if(omData.Current.VPDeficit != null)
+                    data.Add("Deficit: " + omData.Current.VPDeficit + " " + omData.CurrentUnits.VPDeficit);
+                if(omData.Current.CAPE != null)
+                    data.Add("CAPE: " + omData.Current.CAPE + " " + omData.CurrentUnits.CAPE);
+                if(omData.Current.Evapo != null)
+                    data.Add("ET0: " + omData.Current.Evapo + " " + omData.CurrentUnits.Evapo);
+                if(omData.Current.FreezingHeight != null)
+                {
+                    if(float.TryParse(omData.Current.FreezingHeight, out float parsed))
+                    {
+                        int freezingHeight = (int)parsed;
+                        data.Add("Freezing: " + freezingHeight.ToString() + " " + omData.CurrentUnits.FreezingHeight);
+                    }
+                    else
+                    {
+                        data.Add("Freezing: " + omData.Current.FreezingHeight + " " + omData.CurrentUnits.FreezingHeight);
+                    }
+                }
+                if(omData.Current.SoilTemperature != null)
+                    data.Add("Soil: " + omData.Current.SoilTemperature + " " + omData.CurrentUnits.SoilTemperature);
+                if(omData.Current.SoilMoisture != null)
+                    data.Add("Moisture: " + omData.Current.SoilMoisture + " " + omData.CurrentUnits.SoilMoisture);
             }
-            if(omData.Current.FeelsLike != null)
-                data.Add("Feels Like: " + omData.Current.FeelsLike + " " + omData.CurrentUnits.FeelsLike);
-            if(omData.Current.Humidity != null)
-                data.Add("Humidity: " + omData.Current.Humidity + " " + omData.CurrentUnits.Humidity);
-            if(omData.Current.DewPoint != null)
-                data.Add("Dew Point: " + omData.Current.DewPoint + " " + omData.CurrentUnits.DewPoint);
-            if(omData.Current.Pressure != null)
-                data.Add("Pressure: " + omData.Current.Pressure + " " + omData.CurrentUnits.Pressure);
-            if(omData.Current.CloudCover != null)
-                data.Add("Cloud Cover: " + omData.Current.CloudCover + " " + omData.CurrentUnits.CloudCover);
-            if(omData.Current.TotalPrecip != null)
-                data.Add("Total Rain: " + omData.Current.TotalPrecip + " " + omData.CurrentUnits.TotalPrecip);
-            if(omData.Current.PrecipChance != null)
-                data.Add("Rain Chance: " + omData.Current.PrecipChance + " " + omData.CurrentUnits.PrecipChance);
-            if(omData.Current.Snowfall != null)
-                data.Add("Snowfall: " + omData.Current.Snowfall + " " + omData.CurrentUnits.Snowfall);
-            if(omData.Current.SnowDepth != null)
-                data.Add("Snow Depth: " + omData.Current.SnowDepth + " " + omData.CurrentUnits.SnowDepth);
-            if(omData.Current.Visibility != null)
-                data.Add("Visibility: " + omData.Current.Visibility + " " + omData.CurrentUnits.Visibility);
-
-            if(omData.Current.ShortRadiation != null)
-                data.Add("Shortwave: " + omData.Current.ShortRadiation + " " + omData.CurrentUnits.ShortRadiation);
-            if(omData.Current.DirectRadiation != null)
-                data.Add("Direct: " + omData.Current.DirectRadiation + " " + omData.CurrentUnits.DirectRadiation);
-            if(omData.Current.DiffuseRadiation != null)
-                data.Add("Diffuse: " + omData.Current.DiffuseRadiation + " " + omData.CurrentUnits.DiffuseRadiation);
-            if(omData.Current.VPDeficit != null)
-                data.Add("Deficit: " + omData.Current.VPDeficit + " " + omData.CurrentUnits.VPDeficit);
-            if(omData.Current.CAPE != null)
-                data.Add("CAPE: " + omData.Current.CAPE + " " + omData.CurrentUnits.CAPE);
-            if(omData.Current.Evapo != null)
-                data.Add("ET0: " + omData.Current.Evapo + " " + omData.CurrentUnits.Evapo);
-            if(omData.Current.FreezingHeight != null)
-                data.Add("Freezing: " + omData.Current.FreezingHeight + " " + omData.CurrentUnits.FreezingHeight);
-            if(omData.Current.SoilTemperature != null)
-                data.Add("Soil: " + omData.Current.SoilTemperature + " " + omData.CurrentUnits.SoilTemperature);
-            if(omData.Current.SoilMoisture != null)
-                data.Add("Moisture: " + omData.Current.SoilMoisture + " " + omData.CurrentUnits.SoilMoisture);
-
+            else
+            {
+                if(settings.WeatherData.DailyMaxTemp == 1)
+                    data.Add("Max: " + omData.Daily.MaxTemps[day] + " " + omData.DailyUnits.MaxTemp);
+                if(settings.WeatherData.DailyMinTemp == 1)
+                    data.Add("Min: " + omData.Daily.MinTemps[day] + " " + omData.DailyUnits.MinTemp);
+                if(settings.WeatherData.DailyMaxWind == 1)
+                    data.Add("Max Wind: " + omData.Daily.MaxWind[day] + " " + omData.DailyUnits.MaxWind);
+                if(settings.WeatherData.DailySunshineDuration == 1)
+                {
+                    if(float.TryParse(omData.Daily.SunshineDuration[day], out float parsed))
+                    {
+                        int sunshine = (int)parsed;
+                        if(sunshine > 60 && omData.DailyUnits.SunshineDuration == "s")
+                        {
+                            sunshine /= 60;
+                            omData.DailyUnits.SunshineDuration = "m";
+                        }
+                        if(sunshine > 60 && omData.DailyUnits.SunshineDuration == "m")
+                        {
+                            sunshine /= 60;
+                            omData.DailyUnits.SunshineDuration = "h";
+                        }
+                        data.Add("Sunshine: ~" + sunshine.ToString() + omData.DailyUnits.SunshineDuration);
+                    }
+                    else
+                    {
+                        data.Add("Sunshine: " + omData.Daily.SunshineDuration[day] + omData.DailyUnits.SunshineDuration);
+                    }
+                }
+                if(settings.WeatherData.DailyPrecipChance == 1)
+                    data.Add("Rain Chance: " + omData.Daily.PrecipChance[day] + " " + omData.DailyUnits.PrecipChance);
+                if(settings.WeatherData.DailyTotalPrecip == 1)
+                    data.Add("Total Rain: " + omData.Daily.TotalPrecip[day] + " " + omData.DailyUnits.TotalPrecip);
+                if(settings.WeatherData.DailyFeelsLikeMax == 1)
+                    data.Add("Feels Like Max: " + omData.Daily.FeelsLikeMax[day] + " " + omData.DailyUnits.FeelsLikeMax);
+                if(settings.WeatherData.DailyFeelsLikeMin == 1)
+                    data.Add("Feels Like Min: " + omData.Daily.FeelsLikeMin[day] + " " + omData.DailyUnits.FeelsLikeMin);
+                if(settings.WeatherData.DailyTotalSnowfall == 1)
+                    data.Add("Total Snowfall: " + omData.Daily.TotalSnowfall[day] + " " + omData.DailyUnits.TotalSnowfall);
+                if(settings.WeatherData.DailyWindDirection == 1)
+                {
+                    string windDirection = (settings.DirectionUnit == DirectionUnit.degrees) ? omData.Daily.WindDirection[day] + omData.DailyUnits.WindDirection : ToCompass(omData.Daily.WindDirection[day]);
+                    data.Add("Wind Direction: " + windDirection);
+                }
+                if(settings.WeatherData.DailyTotalShortRadiation == 1)
+                    data.Add("Total Shortwave: " + omData.Daily.TotalShortRadiation[day] + " " + omData.DailyUnits.TotalShortRadiation);
+                if(settings.WeatherData.DailyTotalEvapo == 1)
+                    data.Add("Total ET0: " + omData.Daily.TotalEvapo[day] + " " + omData.DailyUnits.TotalEvapo);
+                if(settings.WeatherData.DailyMaxUVIndex == 1)
+                    data.Add("Max UV: " + omData.Daily.MaxUVIndex[day] + " " + omData.DailyUnits.MaxUVIndex);
+            }
 
             return string.Join("     ", data);
         }
