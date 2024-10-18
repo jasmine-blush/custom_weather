@@ -20,7 +20,7 @@ In this example, the second result in the list is selected, which shows a foreca
 - [x] Cache Geocoding data to reduce requests
 - [x] Implement home town and add more settings
 - [x] Allow customization of data display
-- [ ] Add support for non-latin scripts
+- [ ] Add support for non-latin scripts (not planned yet)
 - [x] Show forecast
 - [x] Upgrade .NET Framework (now 4.8.1)
 - [ ] Implement Wox Proxy
