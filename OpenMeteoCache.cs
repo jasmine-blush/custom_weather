@@ -5,7 +5,7 @@ namespace custom_weather
 {
     internal static class GeocodeCache
     {
-        private static Dictionary<string, List<Coordinates>> _cache = new Dictionary<string, List<Coordinates>>();
+        private static readonly Dictionary<string, List<Coordinates>> _cache = new Dictionary<string, List<Coordinates>>();
 
         internal static void Cache(string key, List<Coordinates> value)
         {
@@ -32,7 +32,7 @@ namespace custom_weather
 
     internal static class WeatherCache
     {
-        private static Dictionary<string, WeatherResult> _cache = new Dictionary<string, WeatherResult>();
+        private static readonly Dictionary<string, WeatherResult> _cache = new Dictionary<string, WeatherResult>();
 
         internal static void Cache(string key, WeatherResult value)
         {
