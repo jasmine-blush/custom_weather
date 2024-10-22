@@ -1,5 +1,5 @@
 # Custom.Weather plugin for Wox
- A customizable weather plugin for Wox v1.\*.\*</br>
+ A customizable weather plugin for Wox v1.x.x</br>
  Weather data retrieval from free and open-source weather API [Open-Meteo](https://open-meteo.com)
 
  Get the Plugin [here](http://www.wox.one/plugin/430) or check the Releases tab.
