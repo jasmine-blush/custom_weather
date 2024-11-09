@@ -1,6 +1,10 @@
 # Custom.Weather plugin for Wox
  A customizable weather plugin for Wox v1.\*.\*</br>
- Weather data retrieval from free and open-source weather API [Open-Meteo](https://open-meteo.com)
+ Weather data retrieval from free and open-source weather API [Open-Meteo](https://open-meteo.com).
+
+## Installation
+Install by typing ```wpm install Custom.Weather``` into Wox.  
+Alternatively, you can download it from the Releases tab here or from the [wox plugin site](http://www.wox.one/plugin/430).
 
 ## Look and Settings
 <img width="600" src="Images\\example.png"/>
