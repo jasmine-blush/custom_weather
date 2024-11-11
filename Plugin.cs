@@ -9,6 +9,8 @@ namespace custom_weather
 {
     internal class Plugin : IPlugin, ISettingProvider
     {
+        public static readonly string PluginIcon = "Images\\plugin.png";
+
         private PluginInitContext _context;
         private SettingsSave _settings;
 
@@ -35,8 +37,9 @@ namespace custom_weather
                 }
                 catch(Exception)
                 {
-                    _settings = new SettingsSave();
-                    _settings.ConfigPath = configPath;
+                    _settings = new SettingsSave {
+                        ConfigPath = configPath
+                    };
                     _settings.Validate();
                 }
 
@@ -66,7 +69,7 @@ namespace custom_weather
                     results.Add(new Result() {
                         Title = "No home town",
                         SubTitle = "Add a home town for default weather",
-                        IcoPath = "Images\\plugin.png"
+                        IcoPath = PluginIcon
                     });
                 }
             }
@@ -109,7 +112,7 @@ namespace custom_weather
                         {
                             return GetDetailResults(coords, selection);
                         }
-                        return new List<Result>() { new Result() { Title = search, SubTitle = "Can't findd this city", IcoPath = "Images\\plugin.png" } };
+                        return new List<Result>() { new Result() { Title = search, SubTitle = "Can't findd this city", IcoPath = PluginIcon } };
                     }
                     return GetWeather(keyword, search);
                 }
@@ -118,11 +121,11 @@ namespace custom_weather
                     return GetDetailResults(coords, 0);
 
                 }
-                return new List<Result>() { new Result() { Title = search, SubTitle = "Can't finddd this city", IcoPath = "Images\\plugin.png" } };
+                return new List<Result>() { new Result() { Title = search, SubTitle = "Can't finddd this city", IcoPath = PluginIcon } };
             }
             catch(Exception e)
             {
-                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" } };
+                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = PluginIcon } };
             }
         }
 
@@ -174,7 +177,7 @@ namespace custom_weather
             }
             catch(Exception e)
             {
-                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = "Images\\plugin.png" } };
+                return new List<Result>() { new Result() { Title = search, SubTitle = e.InnerException.Message, IcoPath = PluginIcon } };
             }
         }
 

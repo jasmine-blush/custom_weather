@@ -49,7 +49,7 @@ namespace custom_weather
             for(int i = 0; i < 7; i++)
             {
                 WeatherResult weatherResult = await GetWeather(coords, settings, i);
-                string dateString = "";
+                string dateString;
                 if(i == 0)
                 {
                     dateString = "Today";
@@ -106,7 +106,7 @@ namespace custom_weather
                     else
                     {
                         result.Title = "Unknown Weather";
-                        result.IcoPath = "Images\\plugin.png";
+                        result.IcoPath = Plugin.PluginIcon;
                     }
                     if(day == 0)
                     {

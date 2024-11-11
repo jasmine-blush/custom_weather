@@ -1,10 +1,13 @@
 # Custom.Weather plugin for Wox
+
  A customizable weather plugin for Wox v1.\*.\*</br>
  Weather data retrieval from free and open-source weather API [Open-Meteo](https://open-meteo.com).
 
 ## Installation
 Install by typing ```wpm install Custom.Weather``` into Wox.  
 Alternatively, you can download it from the Releases tab here or from the [wox plugin site](http://www.wox.one/plugin/430).
+
+Get the Plugin [here](http://www.wox.one/plugin/430) or check the Releases tab.
 
 ## Look and Settings
 <img width="600" src="Images\\example.png"/>
@@ -24,7 +27,7 @@ In this example, the second result in the list is selected, which shows a foreca
 - [x] Cache Geocoding data to reduce requests
 - [x] Implement home town and add more settings
 - [x] Allow customization of data display
-- [ ] Add support for non-latin scripts
+- [ ] Add support for non-latin scripts (not planned yet)
 - [x] Show forecast
 - [x] Upgrade .NET Framework (now 4.8.1)
 - [ ] Implement Wox Proxy
