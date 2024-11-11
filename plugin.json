@@ -4,7 +4,7 @@
     "Name":"Custom.Weather",
     "Description":"Customizable weather plugin for Wox",
     "Author":"Aimi",
-    "Version":"1.0.4",
+    "Version":"1.0.5",
     "Language":"csharp",
     "Website":"https://github.com/jasmine-blush/custom_weather",
     "IcoPath":"Images\\plugin.png",
