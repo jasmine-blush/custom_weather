@@ -7,8 +7,6 @@
 Install by typing ```wpm install Custom.Weather``` into Wox.  
 Alternatively, you can download it from the Releases tab here or from the [wox plugin site](http://www.wox.one/plugin/430).
 
-Get the Plugin [here](http://www.wox.one/plugin/430) or check the Releases tab.
-
 ## Look and Settings
 <img width="600" src="Images\\example.png"/>
 
